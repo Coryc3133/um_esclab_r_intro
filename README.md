@@ -1,21 +1,21 @@
 # uoregon_r_bootcamp
 R Bootcamp 
 University of Oregon Psychology Department
-Summer 2018
+Summer 2019
 
 ## Instructor:
-Jessica E. Kosie
+Cory K. Costello
 
 ## Credit:
 Content adapted from:
 
-[Tools for Open Science: Reproducible Data Analysis and Paper Writing in R (Infancy 2018 Pre-Conference; Michael C. Frank, Jessica E. Kosie, Elika Bergelson, Melissa Kline)](https://github.com/mcfrank/openscience_tutorial)
-
-[Michael C. Frank's Tidyverse Tutorial](https://github.com/mcfrank/tidyverse-tutorial)
+[Jessica Kosie's 2018 Version of this workshop](https://github.com/jkosie/uoregon_r_bootcamp)
 
 [Hadley Wickham's R for Data Science](http://r4ds.had.co.nz/)
 
 [Sara Weston's R Workshops](http://www.saraweston.com/r/)
+
+[Data Science Club's in progress R Guide (Contr. Jonny Saunders, Krista Destasio, include myself)](https://uodatascience.github.io/R_Guide/introduction.html)
 
 ## Additional Resources:
 
@@ -24,6 +24,8 @@ Content adapted from:
 R for Data Science (see *Hadley Wickham* above)
 
 [Cookbook for R](http://www.cookbook-r.com/)
+
+[Learning Stats with R](https://learningstatisticswithr.com/)
 
 [Quick-R](https://www.statmethods.net/)
 
