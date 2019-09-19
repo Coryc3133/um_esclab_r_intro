@@ -1,7 +1,7 @@
 ---
 title: "Introduction to R"
-author: "Jessica Kosie"
-date: "9/17/2018"
+author: "Cory Costello"
+date: "9/18/2019"
 output: 
   html_document:
     toc: true
@@ -12,96 +12,345 @@ output:
 
 By the end of this tutorial, you will know:
 
-+ Basic `R` usage (using `R` as a calculator, creating variables, indexing vectors)
++ Basic `R` usage (using `R` as a calculator, creating variables, indexing)
++ How R represents Data
 + How to read in and examine data
 + How to get values out of the rows and columns in your data
++ Basic iteration (for loops and functions)
 + What a pipe is and how to use pipes to chain together `tidyverse` verbs
 + Begin understanding tidyverse "verbs" (we'll continue on Thursday)
 
-The best way to do this tutorial is to walk through it slowly, executing each line and trying to understand what it does. You can execute a single line by placing your cursor somewhere in that line and hitting CMD+enter (again on a mac) and execute a whole chunk at a time by hitting CMD+option+C (on a mac). 
+The best way to do this tutorial is to walk through it slowly, executing each line and trying to understand what it does. You can execute a single line by placing your cursor somewhere in that line and hitting CTRL+enter on a PC or CMD+enter on a mac; you can execute a whole chunk at a time by hitting CTRL+shift+enter on a PC. 
 
 # 1. Basic R Use
 
-R can simply be used as a calculator.
+## 1a. Basic Computing
+R can be used as a calculator.
+
+You can do basic arithmetic:
 
 ```{r}
-# Basic arithmetic
-2+3
-2*3
+# Add
+2 + 3
+# subtract
+2 - 3
+# multiplication
+2 * 3
+# Division
 10/2
+# Exponents
 4^2
+# Roots
+4^(1/2)
+```
 
-# Follows order of operations (PEMDAS)
+Thankfully, R follows the order of operations (PEMDAS).
+
+```{r}
 (2^3)+4*(5/3)
 ```
 
-These values aren't stored anywhere though. 
+These values aren't stored anywhere though. This brings me to the first general coding principal of the day:
 
-To keep them in memory, we need to assign them to a variable. 
+*Computers tend to take things literally, and do exactly what you ask.* So, when you tell R to divide 6 by 2 (`6/2`), it does exactly that, but it doesn't save it in memory. You have to do it to do that too.
+
+## 1b. Storing values in objects
+To keep a value in memory, we need to assign it to an object. 
+
+R has two assignment operators: `=` & `<-`. Let's use these to create an object called x, that is assigned the number 8. 
 
 ```{r}
-# Create a variable called x, that is assigned the number 8. 
 x <- 8 
 x = 8
+```
 
-# What value did I assign to x?
+Now we can call `x` by name; if we do this, it will print the value.
+```{r}
 x
+```
 
-# What about y?
-y
+Although `<-` and `=` both work, we'll strictly use `<-` from here on out. This brings us to our second general coding principal of the day:
 
+*Style is important!* You want to use a consistent style so that others (including your future self) can easily and quickly read your code. I'll be using [Hadley Wickham's Style Guide](http://adv-r.had.co.nz/Style.html) from here on out, part of which is assigning variables with `<-`. Remember, the keyboard shortcut `Alt+-` or `Option+-` can be used to insert a `<-`.
+
+Now, let's take a look at the variable `y`:
+
+```{r eval = FALSE}
+# Call Y
+y 
+```
+
+D'oh! We didn't assign anything to `y`, so R is telling us that it doesn't exist the best way it knows how. 
+```{r}
 # Need to assign something to y!
 y <- 2
 
 y
+```
 
-# And we can do things with these variables:
+Now, we can use these variables in calculations
+```{r}
+# add em up:
 x + y
+# multiply them
 x * y
+```
 
+But remember, if we want to save *those* calculations, we need to assign them:
+```{r}
+# define the product as z
 z <- x * y
+```
+### Naming Variables
+You may be wondering how to name variables in R. Well, there are just a few rules:
 
-# Can use any name you want! But...object names must start with a letter, and can only contain letters, numbers, "_" and "." So, there are different options.
+1. object names must start with a letter
+2. can contain alphanumeric characters, "_", and ".".
+3. R is case sensitive, so `R` and `r` would be different variables.
 
-this_is_snake_case <- 8
-thisIsCamelCase <- 8
-some.people.use.periods <- 8
-And_someTimes.People_doSTRANGEtHiNgS <- 8
+This is another element of *style*. Using a consistent style when naming variables is crucial to maintaining your sanity. 
 
-# Can also assign a range of values
-x <- 1:5 #x is now a vector of 1, 2, 3, 4, 5
+Some options include:
 
-# Note that x is no longer 8, it take on whatever the most recent assignment was
++ snake_case
++ SCREAMING_SNAKE (*but why*)
++ camelCase
++ you.can.use.periods (*but don't*)
+  + `.` should be avoided, because it is used to define methods in R and you could end up conflicting with a method name.
 
+I'll be using snake_case (again see [Hadley Wickham's Style Guide](http://adv-r.had.co.nz/Style.html)), but you can change to another option if you'd like.
+```{r}
+this_is_snake_case <- 8 # a_fine_choice
+thisIsCamelCase <- 8 #alsoTotallyWorks
+some.maniacs.use.periods <- 8 # probably.best.avoided
+And_someTimes.People_doSTRANGEtHiNgS <- 8 # PLEASE NeVeR DO ANYTHING LIKE THIS!
+```
+
+> **Exercise 1a.** Create two variables. Name theme anything you like, and make them both equal to a single number (choose any number you like), and add them together. 
+
+```{r}
+
+```
+
+
+# 2. Types of Data
+
+## 2a. Types of Values
+R has different types of data, and an object's type affects how it interacts with functions and other objects. So far, we've just been working with integers. R has several other types of data:
+
+Type | Definition | Example
+-----|------------|--------
+Integer | whole numbers from -Inf to +Inf | 1, 2, -1, -10928
+Numeric / Double | fractions & decimals from -Inf to +Inf | 1.3, .293764, -.1239217, `Inf`, `-Inf`
+Character / String | quoted strings of letters, numbers, and allowed symbols| "1", "one", "o_n_e", "o-n-e", "o.n.e"
+Logical / Boolean | logical constants of True or False | TRUE, FALSE, T, F
+
+There are a few special types worth knowing about too:
+
+Type | Definition |Example
+-----|------------|-------
+NA   | Missing value; technically represented as different types but displayed as NA | NA_logical_, NA_integer_
+NaN  | 'not a number' | 0/0
++Inf | positive infinity | Inf
+-Inf | negative infinity | -Inf
+NULL | The NULL object; an object that exists but is completely empty | NULL;
+
+You can use `typeof()` to find out the type of a value or object:
+
+```{r}
+typeof(1)
+typeof(TRUE)
+typeof(1L)
+typeof(NA_character_)
+typeof(NA)
+typeof(NULL)
+typeof(NaN)
+typeof(Inf)
+typeof("one")
+```
+
+## 2b. Vectors
+
+Often, we're not working with individual values, but with multiple values. We assign an ordered sequency using `starting_number:ending_number`. For example, we could make `x` a vector with the numbers between 1 and 5:
+
+```{r}
+x <- 1:5 # sequence of the form starting_number:ending_number
+```
+
+You'll notice in that x has changed in the environment pane. Since it's a vector, it tells us what type of vector it is, it's length, and its contents (which can be abbreviated if the object is larger). In this case, it's a vector of integers (hence `int`), of length 5 (hence `[1:5]`), and contains the numbers 1 through 5.
+
+We can also create a sequence using the function `seq()`. `seq()` is a function that creates a sequence of numbers. Like all R functions, you can learn more about it by accessing the help documentation (`?+function_name`). Let's take a look:
+
+```{r}
+?seq
+```
+
+Interpreting R help documention is a skill itself, but a very worthwhile one. I promise that it gets easier. 
+
+What happens if we run `seq()` with no arguments?
+```{r}
+seq()
+```
+
+**Q: Why did this happen?**    
+
+**A: **    
+
+To make a sequence from 1 to 5 with this function, we have to set the `from =` and `to =` to those boundaries:
+
+```{r}
+seq(from = 1, to = 5)
+```
+
+We can also set one or more of the other arguments. The `by =` argument allows us to change the increment of the sequence. Let's say we wanted every other number between 1 and 5. We can do this by setting `by = 2`
+
+```{r}
+seq(from = 1, to = 5, by = 2)
+```
+
+We can also create a vector of any numbers we want using the `c()` function. You do this by putting numbers seperated by a `,` within the parentheses. 
+
+```{r}
 # We can also assign a vector of values this way
-x <- c(2, 8, 1, 9)
+x <- c(2, 8.5, 1, 9)
 ```
 
-Vectors are just 1-dimensional lists of numbers.
+Note that it became a numeric vector (hence `num`), which is different from a vector of integers in that it allows decimal points. This brings us to an important feature of vectors:
+
+Vectors are just 1-dimensional sequences **of a single type of data**. Because `1:5` will just be integers, R stored the vector as `int`. Since we have `8.5` in our new x vector, it will convert x to a numeric vector (which permits decimals). The general rule R uses is to set the vector to be the most permissive type necessary. P
+
+Note that vectors can also include strings or character values.
 
 ```{r}
-# Let's get the numbers 1 thru 10 by ones 
-1:10
-
-# Sequence of numbers, 1 thru 10, by 2
-seq(from = 1, to = 10, by = 2) #can say "from", "to", and "by=", but they're not necessary
-
+letters <- c("a", "b", "c", "d")
 ```
 
-> **Exercise 1a.** Create a variable called x that is assigned the number 8. Create a variable called y that is a sequence of numbers from 2 to 16, by 2. Add x and y. What happens? 
+What happens if we put the vectors `x` and `letters` together? Let's take a look:
+
+```{r}
+mixed_vec <- c(x, letters)
+mixed_vec
+```
+
+Notice the quotes? R turned all of our numbers into strings, since strings are more permissive than numbers. You can see that by running `typeof()`:
+
+```{r}
+typeof(mixed_vec)
+```
+
+This is called *coercion*. R coerces a vector into whichever type will accomodate all of the values. We can also coerce a vector ourselves using the `as.` family of functions. Let's coerce mixed_vec into a numeric:
+
+```{r}
+as.numeric(mixed_vec)
+```
+
+
+> **Exercise 2a.** Create an object called x that is assigned the number 8. Create an object called y that is a sequence of numbers from 2 to 16, by 2. Add x and y. What happens? 
+
+```{r}
+x <- 8
+y <- seq(from = 2, to = 16, by = 2)
+x + y
+```
+
+> **Exercise 2b.** Create an object called z that is a vector containing the numbers 5 and 10. Create an object called q that is a sequence of numbers from 5 to 25, by 5. Multiply q and z. What happens? 
+
+```{r}
+z <- c(5, 10)
+q <- seq(from = 5, to = 25, by = 5)
+q*z
+```
+
+> **Exercise 2c.** Create an object called a that is just the letter "a". Add a to x (from above). What happens? 
+
+```{r eval = FALSE}
+a <- "a"
+a + x
+```
+
+> **Exercise 2d.** Create a vector called b that is just the number 8 in quotes. Add b to x (from above). What happens? 
+
+```{r}
+b <- "8"
+```
+
+> **Exercise 2e** Find the type of each of the objects we just made (x, y, q, z, b)? 
+
+```{r}
+typeof(x)
+typeof(y)
+typeof(q)
+typeof(z)
+typeof(b)
+```
+
+> **Exercise 2e** Find some way to add b to x (hint: you may need to be coercive)? 
 
 ```{r}
 
-
 ```
 
-> **Exercise 1b.** Create a variable called z that is a vector containing the numbers 5 and 10. Create a variable called q that is a sequence of numbers from 5 to 25, by 5. Multiply x and y. What happens? 
+### Indexing vectors
+
+The last thing to mention about vectors is that they are all indexed numerically in R, starting with 1. Since vectors are only 1 dimension, we index them with a single number in `[]`. Let's get just the first element of the vector `q` we made in the exercises above:
 
 ```{r}
-
-
+q[1]
 ```
-## 2. Functions
+
+What if we wanted the first two elements? We could do this by passing the sequence `1:2` as our index:
+
+```{r}
+q[1:2]
+```
+
+Or, we could get the first and third element by passing those indexes as a vector using `c()`:
+
+```{r}
+q[c(1, 3)]
+```
+
+Finally, if the elements in the vector have names, we can refer to them by name instead of their numerical index. You can see the names of a vector using `names()`
+
+```{r}
+names(q)
+```
+
+Looks like the elements in X have no names. We can change that by assigning them names using a vector of names:
+
+```{r}
+names(q) <- c("first", "second", "third", "fourth", "fifth")
+```
+
+And we can see the names:
+
+```{r}
+names(q) 
+```
+
+And use them to subset certain elements
+
+```{r}
+q["first"]
+q[1]
+```
+
+> **Exercise 2f.** Create a vector called `named` that includes the numbers 1 to 5. Name each value a, b, c, d, and e (in order). Print the first element using numerical indexing and the last element using name indexes. 
+
+```{r}
+named <- 1:5
+names(named) <- c("a", "b", "c", "d", "e")
+named[1]
+named["e"]
+```
+
+## 2c. Lists
+
+## 2d. Matrices & Arrays
+
+## 2e. Data Frames
+
+# 3. Functions
 
 `seq` that we used above is a **function**. Everything you typically want to do in statistical programming uses functions. Functions can take different **arguments**.
 
@@ -283,131 +532,6 @@ round(x, 2)
 
 ```
 
-# 4. Plotting in "Base R"
-
-```{r}
-# Get some data and plot it
-plot(sin(seq(-pi,pi,.01))) #plot the sin of every value in the sequence between -pi and pi
-
-# Plot 1 to 10
-plot(seq(1,10,1))
-
-# Plot that as a line
-plot(seq(1,10,1), type='l')
-
-# Plot that as a blue line
-plot(seq(1,10,1), type='l', col = "blue")
-
-# We can plot 2 graphs on the same plot
-
-# Get some data 
-x <- seq(-pi,pi,.01)
-
-# Create one plot
-plot(sin(x))
-
-# Keep the plot open to overlay something else
-par(new=TRUE)
-
-# Plot another graph in a different color so we can easily see the two different graphs
-plot(cos(x), col="green")
-
-# Here's another way to do it
-lines(tan(x),col="blue") #puts things in same plot, but doesn't overlay
-
-# Get a different x
-x <- rnorm(100, mean=100, sd=15) #100 values from normal dist. w/ mean=100, SD=15
-#can check mean and sd of our sample
-mean(x)
-sd(x)
-#pretty close to the parameters we set because the sample size is large 
-#probably wouldn't be as close if sample size was 5
-
-# Get a histogram of x
-hist(x)
-
-# Can do fancier stuff
-hist(x, breaks=20) # histogram of x with 20 bins
-hist(x, breaks=20, xlab="IQs", main="Histogram of IQs") #title and axes
-
-# Line graphs
-x <- seq(-3,3,.01)
-y <- seq(1,7,.01)
-
-# Can give values for the x and y axis
-plot(x,y)
-
-# Can do fancier stuff here as well
-plot(x, y, type = 'l', col = "purple", xlab = "X Axis", ylab = "Y Axis", main = "Graph of X and Y")
-
-# Now let's look at bar plots - get some categorical data
-x <- c(10,8,7,7,5)
-barplot(x,main="Some RTs", xlab="Group")
-
-# Label the bars
-barplot(x, main="Some RTs", xlab="Group", names.arg=c("One", "Two", "Three", "Four", "Five"))
-
-# Add some color
-barplot(x,main="Some RTs", xlab="Group", names.arg=c("One", "Two", "Three", "Four", "Five"), col=rainbow(5))
-
-# Which arguments did we use?
-?barplot
-
-# Add a legend (probably don't really need this here since bars are labeled...)
-legend("topright", c("One", "Two", "Three", "Four", "Five"), cex=0.6, bty="n", fill=rainbow(5))
-
-# What do these arguments mean
-?legend
-
-```
-
-# For simple plotting in Base R, I really like this website: https://www.harding.edu/fmccown/r/
-
-(below are some examples borrowed from this website)
-
-This site is nice, too, for understanding graphical parameters: https://www.statmethods.net/advgraphs/parameters.html
-
-```{r}
-# Compare cars and trucks
-cars <- c(1,3,6,4,9)
-trucks <- c(2,5,4,5,12)
-
-# Make a graph for cars. using points connected by a line, y axis ranges from 0 to 12.
-plot(cars, type='o', col="blue", ylim=c(0,12), ann=FALSE) 
-
-#ann=FALSE means that R shouldn't label the axes, asking it not to automatically label the y axis right now because it would just be labeled cars and we want to plot trucks, too.
-
-# Graph trucks on the same plot w/ a red dashed line and square points
-lines(trucks, type='o', pch=22, lty=2, col="red")
-
-# Add a title & labels for axes
-title(main="Autos",col.main="red",font.main=4, xlab="Count", ylab="Total")
-
-```
-
-> **Exercise 4a.** Let's create a graph comparing number of yoga classes taken in a week and stress level. 
-
-Create a variable called `yoga` containing the numbers 0, 1, 2, 3, 4, 5, 6, 7. 
-
-Create a second variable called `stress` containing the numbers 10, 8, 7, 4, 3, 2, 3, 8.  
-
-Create a plot with `yoga` on the x axis and `stress` on the y axis.   
-
-Make sure this is a line graph and make your line blue and dashed. 
-
-Label the x axis `Number of Yoga Classes`.
-
-Label the y axis `Stress Level`. Make sure the y axis ranges from 0 to 10.
-
-Title the graph `Relationship between Yoga and Stress`.
-
-What is the relationship between yoga and stress?
-```{r}
-
-
-
-```
-
 # 5. Reading data into R
 
 First, you'll need to tell R where to look for the data. To do this, you will set your working directory. 
@@ -420,7 +544,7 @@ For this tutorial, your working directory should be wherever you downloaded the 
 getwd()
 
 # How can I change my working directory?
-setwd("/Users/jessicakosie/Desktop/uoregon_r_bootcamp/")
+#setwd(")
 getwd()
 
 # What is in my working directory?
@@ -435,8 +559,10 @@ Session > Set Working Directory > Choose Directory
 You can choose the folder you want to work in. The code for setting the working directory will populate in the console. You can then copy/paste this into your code if you'd like.
 
 ```{r}
+#install.packages("rio")
+library(rio)
 # Now, let's read in the pragmatic_scales_data CSV file and save it as an object called ps_data
-ps_data <- read.csv("pragmatic_scales_data.csv", header = TRUE)
+ps_data <- import("pragmatic_scales_data.csv", header = TRUE)
 
 ```
 
@@ -445,9 +571,7 @@ ps_data <- read.csv("pragmatic_scales_data.csv", header = TRUE)
 Here's how you could read in this file if it were an SPSS file. (The code below won't work because the file is a .csv)
 ```{r}
 # Uncomment the line below to install the `foreign` package
-# install.packages("foreign")
-library(foreign)
-ps_data_spss <- read.spss('pragmatic_scales_data.sav', to.data.frame = TRUE)
+#ps_data_spss <- import('pragmatic_scales_data.sav')
 
 ```
 
@@ -475,7 +599,7 @@ summary(ps_data)
 View(ps_data)
 
 # Note the capital `V`
-view(ps_data) #this doesn't work!
+#view(ps_data) #this doesn't work!
 
 # We can also look at the structure of the data.
 str(ps_data)
@@ -553,7 +677,7 @@ We can apply functions to an entire column. For example, I can get the mean age 
 Note that I have to include the data file in this argument, if I just say mean(age) I'll get an error.
 
 ```{r}
-mean(age) # doesn't work! I don't  have anything in my environment called "age"
+#mean(age) # doesn't work! I don't  have anything in my environment called "age"
 
 mean(ps_data$age)
 ```
@@ -806,9 +930,9 @@ ps_means_nosubgrouping
 
 # I highly recommend trying out the swirl package!
 
-install.packages("swirl") # give it time to install, if you're using R Studio you'll see a little 
+#install.packages("swirl") # give it time to install, if you're using R Studio you'll see a little 
 # stop sign in the top right corner of the console until it's finished installing.
-library(swirl)
-swirl()  # have fun! :)
+#library(swirl)
+#swirl()  # have fun! :)
 
 ```
