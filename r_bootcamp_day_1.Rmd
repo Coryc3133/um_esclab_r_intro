@@ -133,10 +133,7 @@ And_someTimes.People_doSTRANGEtHiNgS <- 8 # PLEASE NEVER DO ANYTHING LIKE THIS!
 > Create a variable called var_1 that is equal to 4. Then create a variable called var_2 that is var_1 raised to the power of 6. Print the results.
 
 ```{r}
-var_1 <- 4
-var_2 <- var_1^6
-var_1
-var_2
+
 ```
 
 # 2. Types of Data
@@ -262,9 +259,7 @@ as.numeric(mixed_vec)
 > Create an object called x that is assigned the number 8. Create an object called y that is a sequence of numbers from 2 to 16, by 2. Add x and y. What happens? 
 
 ```{r}
-x <- 8
-y <- seq(from = 2, to = 16, by = 2)
-x + y
+
 ```
 
 ### Exercise 2.2.1b 
@@ -272,42 +267,35 @@ x + y
 > Create an object called z that is a vector containing the numbers 5 and 10. Create an object called q that is a sequence of numbers from 5 to 25, by 5. Multiply q and z. What happens? 
 
 ```{r}
-z <- c(5, 10)
-q <- seq(from = 5, to = 25, by = 5)
-q*z
+
 ```
 
 ### Exercise 2.2.1c
 > Create an object called a that is just the letter "a". Add a to x (from above). What happens? 
 
 ```{r eval = FALSE}
-a <- "a"
-a + x
+
 ```
 
 ### Exercise 2.2.1d 
 > Create a vector called b that is just the number 8 in quotes. Add b to x (from above). What happens? 
 
 ```{r}
-b <- "8"
+
 ```
 
 ### Exercise 2.2.1e 
 > Find the type of each of the objects we just made (x, y, q, z, b)? 
 
 ```{r}
-typeof(x)
-typeof(y)
-typeof(q)
-typeof(z)
-typeof(b)
+
 ```
 
 ### Exercise 2.2.1f 
 > Find some way to add b to x (hint: you may need to be coercive)? 
 
 ```{r}
-as.numeric(b) + x
+
 ```
 
 ### 2.2.2 Indexing vectors
@@ -360,10 +348,7 @@ q[1]
 > Create a vector called `named` that includes the numbers 1 to 5. Name each value a, b, c, d, and e (in order). Print the first element using numerical indexing and the last element using name indexes. 
 
 ```{r}
-named <- 1:5
-names(named) <- c("a", "b", "c", "d", "e")
-named[1]
-named["e"]
+
 ```
 
 ## 2.3 Lists
@@ -458,11 +443,7 @@ cory$year
 > Create a list like mine that is made up of `year`, `name`, `enrollment`, `fave_data`, but corresponds to you (professors can use years as a prof, years since PhD, or make a number up). Make sure you enter two types of favorite data (bc who could choose?!). Make it print your name.
 
 ```{r}
-cory <- list(year = 5L,
-             name = "Cory Costello",
-             enrollment = TRUE, 
-             fave_data = c("strings", "numbers")) # note c() to create a vector
-cory$name
+
 ```
 
 
@@ -491,8 +472,7 @@ cory$fave_data[2]
 > Using the same list, get your PhD year in dog years (`*7`) and assign it to the 2nd position of the `year` object. Then show the new `year` object.
  
 ```{r}
-cory$year[2] <- cory$year*7
-cory$year
+
 ```
  
 ## 2.4. Matrices & Arrays
@@ -592,13 +572,7 @@ mat["r1", 2]
 > Make a matrix called mat2 that is a 3 X 3 matrix with rows 1, 2, 3,  4, 5, 6,  7, 8, 9. Make the column names c1, c2, and c3, and make the row names r1, r2, and r3. Add the first column to the third column.
 
 ```{r}
-mat2 <- matrix(c(1, 2, 3, 
-                 4, 5, 6, 
-                 7, 8, 9),
-               nrow = 3, 
-               byrow = TRUE)
 
-mat2[,1] + mat2[,3]
 ```
  
  
@@ -606,7 +580,7 @@ mat2[,1] + mat2[,3]
 > Multiple the 3rd row by the value in the 2nd row and 2nd column.
 
 ```{r}
-mat2[3,] * mat2[2, 2]
+
 ```
 
 ### 2.4.3 Arrays
@@ -692,24 +666,20 @@ c3 = "a", "b", "c"
 
 ```{r}
 
-df_2 <- data.frame(c1 = c(1, 2, 3), 
-                   c2 = c(2, 4, 6), 
-                   c3 = c("a", "b", "c"))
-str(df_2)
 ```
 
 ### 2.5.2b 
 >  Using df_2, add the first and second columns together. what happens? Why?
 
 ```{r}
-df_2$c1 + df_2$c2
+
 ```
 
 ### 2.5.2c 
 > Using df_2, try to add the first and second rows together. what happens? Why?
 
 ```{r}
-df_2[1,] + df_2[2,]
+
 ```
 
 ## 2.6 Wrapping up Data Types
@@ -814,7 +784,7 @@ mean(vec_w_na, TRUE)
 
 ### 3.2.Q1: 
 > What happenned?     
-**A: trim is in the second position, not na.rm = TRUE. This is the risk of using positional arguments, especially if the mistake has a more subtle effect.**
+**A: **
 
 ## 3.3. User-defined functions
 
@@ -845,12 +815,7 @@ Obviously, we can make much more complicated functions, but we will leave it the
 >  Create a function called `pretty_sd`, that has a single argument called data and prints out "The SD is _" with the blank filled in with the SD of the data. Run it on the `vec_w_na` object.
 
 ```{r}
-pretty_mean <- function(data){
-  mean <- sd(data, na.rm = TRUE)
-  paste("The SD is", mean)
-}
 
-pretty_mean(vec_w_na)
 ```
 
 ## 3.4 For loops
@@ -872,9 +837,7 @@ Note that with a for loop, we have to tell it to print the result; otherwise, it
 > Create a for loop that iterates through our `vec_w_na` vector, and prints out the result of dividing each value by 5 (hint: remember to print!).
 
 ```{r}
-for(i in 1:length(vec_w_na)){
-  print(vec_w_na[i]/5)
-}
+
 ```
 
 ## 3.5. Packages
@@ -1022,7 +985,7 @@ export(ps_data,
 > I made a mistake when creating this and left the datasets in the `uoregon_r_bootcamp` folder instead of putting them into the `/data` directory. Let's fix that. We already fixed ps_data, but now I want you to fix `another_data_set.csv`. First import the data as `another_df`:
 
 ```{r}
-another_df <- import("another_data_set.csv")
+
 ```
 
 
@@ -1030,23 +993,21 @@ another_df <- import("another_data_set.csv")
 > Now I want you to export the data and save it into the `data/` directory. Make sure the name of the dataframe is `another_data_set`, and make sure you save it out as a csv.
 
 ```{r}
-export(another_df,
-       "data/another_data_set.csv")
+
 ```
 
 ### Exercise 4.2c
 > One of my colleagues insists we send them a .sav file so that they can run the analyses in SPSS. Make another copy of `another_data_set` in the `data/` subdirectory that is in the .sav format. 
 
 ```{r}
-another_df <- export(another_df, 
-                     "data/another_data_set.sav")
+
 ```
 
 ### Exercise 4.2d
 > Finally, let's read one of these datasets to make sure everything worked as expected. Import the .sav version of another_data_set as `another_df`.
 
 ```{r}
-another_df <- import("data/another_data_set.sav")
+
 ```
 
 ## 4.3 Examining Your Data
@@ -1182,14 +1143,14 @@ ps_data[which(ps_data$item == "faces" | ps_data$item == "houses"),]
 > Get the first 10 rows of the item column from the `ps_data` df.
 
 ```{r}
-ps_data[1:10, "item"]
+
 ```
 
 ### Exercise 5.1b
 > Using logical indexing, get all of the rows where age is greater than or equal to 3.5 and item equals "faces".
 
 ```{r}
-ps_data[which(ps_data$age >= 3.5 & ps_data$item == "faces"),]
+
 ```
 
 
@@ -1197,8 +1158,7 @@ ps_data[which(ps_data$age >= 3.5 & ps_data$item == "faces"),]
 > Using logical indexing, get all of the columns that start with either s or a (Hint: you will need to use str_detect twice).
 
 ```{r}
-ps_data[,which(str_detect(colnames(ps_data), "^s") |
-                 str_detect(colnames(ps_data), "^a"))]
+
 ```
 
 ## 5.2 Modifying a Dataframe
@@ -1219,7 +1179,7 @@ mean(ps_data$age)
 > Let's center age. Create a new column called age_centered in which you center age by subtracting the mean age from the age column (hint: you can create new columns using assignment: `df$new_col <-`).
 
 ```{r}
-ps_data$centered_age <- ps_data$age - mean(ps_data$age)
+
 ```
 
 # 6. Introduction to the `tidyverse`
@@ -1339,10 +1299,10 @@ function | what it does
 Each of these can be very useful in a given scenario.
 
 ### Exercise 6.1.1a
-> Select the two age variables (age and centered age) usingone of the helper function.
+> Select the two age variables (age and centered age) using one of the helper function.
 
 ```{r}
-select(ps_data, contains("age"))
+
 ```
 
 
@@ -1377,8 +1337,16 @@ filter(ps_data, between(age, 2.1, 2.5))
 ### Exercise 6.2a 
 > Get Kids between the ages of 3 and 4 using `filter()` and the `between()` helper function.
 
+```{r}
+
+```
+
 ### Exercise 6.2b
 > Get Kids between ages of 3 and 4 using `filter()` *without* using the `between()` function.
+
+```{r}
+
+```
 
 ## 6.3. Pipes
 
@@ -1504,15 +1472,7 @@ ps_data %>% # take the data, then...
 > Take the `another_df` dataset. Using select and filter, get the number correct for kids at least 4 years old (note: there are several ways to do this, but the sum() function may be helpful). The output of your pipe should be a single number.
 
 ```{r}
-another_df %>% 
-  filter(age >= 4) %>% 
-  select(correct) %>% 
-  sum()
 
-# or
-another_df %>% 
-  filter(age >= 4 & correct == 1) %>%
-  nrow()
 ```
 
 Okay, that's it for this time! Next time we'll dive deeper into the `tidyverse()`, learning the rest of the main verbs in `dplyr`, how to tidy data with `tidyr`, working with strings and factors (using `stringr` and `forcats`), and how to visualize data with ggplot2.
