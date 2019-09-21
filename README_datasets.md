@@ -13,4 +13,4 @@ Variables:
 
 ## `another_data_set.csv`
 
-This is a fake dataset that was created for the tutorial (simply for learning to set working directories and read in data).
+This is a fake dataset that was created for the tutorial (simply for learning to import & export data).
