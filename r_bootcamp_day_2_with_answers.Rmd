@@ -11,9 +11,9 @@ output:
 
 # Goals 
 
-By the end of the day, you will:
+By the end of the day, you should feel comfortable:
 
-+ How to read in and examine data
++ Reading in and Examining Data
 + How to get values out of the rows and columns in your data
 + What a pipe is and how to use pipes to chain together `tidyverse` verbs
 + Using tidyverse "verbs" to modifiy and summarise data
@@ -23,11 +23,11 @@ By the end of the day, you will:
 Before we get started with new content, let's do a quick review of what we covered last time. 
 
 ## Exercise 0.1a
-> Create a vector, x, and make it the numbers 1 throu 20. Multiply the 3rd element by 5.
+> Create a vector, x, and make it the numbers 1 throu 20. Change the 3rd and fourth element so that they are 5 times greater.
 
 ```{r}
 x <- 1:20
-x[3]*5
+x[3:4] <- x[3:4]*5
 ```
 
 ## Exercise 0.1b
@@ -50,20 +50,32 @@ ps_data %>%
 
 # 1. Diving deeper into dplyr
 
-## 1.1 Refersher on select()
-### 1.1.1 basic selectsd
+We gained a little bit of familiarity with `dplyr` and piping last time, using `select()` and `filter()` to extract particular rows and columns from our data. Today, we'll review these verbs, and add other verbs from `dplyr` that help us manipulate, combine, summarize, and re-arrange dataframes.
+
+## 1.1 Refersher on `select()`
+Let's review what we learned using about selecting columns with the `starwars` dataset.
+
+### 1.1.1 basic selects
+
+Recall that one easy way to select columns is to use `select()`, providing the data as the first argument (w/ or w/o pipes) and desired unquoted column names separated by a comma:
+
 ```{r}
 starwars %>% 
   select(name, homeworld)
 ```
 
 ### 1.1.2 selecting a range
+
+Recall that we can also select a range of variables, by name. Let's get everything from name to homeworld:
+
 ```{r}
 starwars %>% 
   select(name:homeworld)
 ```
 
 ### 1.1.3 selecting with helper functions
+
+The helper fucntions allow us to do even more advanced column selection. For example, we can get all of the columns that contain the string `"color"`:
 
 ```{r}
 starwars %>% 
@@ -72,14 +84,264 @@ starwars %>%
 
 ### 1.1.4 Re-arranging columns with select
 
+I didn't mention this last time, but we can also use select to re-arrange our columns. This is one of the main uses for the `everything()` helper function. Let's re-arrange things so that `homeworld` comes first, followed by `name`, then by the remainin columns
+
 ```{r}
 starwars %>% 
   select(homeworld, name, everything())
 ```
 
-## 1.2 Refersher on filter()
+### Exercise 1.1a
+> Re-arrange the `starwars` columns such that all of the columns that start with h are at the beginning, followed by the remaining columns.
+
+```{r}
+starwars %>% 
+  select(starts_with("h"), everything())
+```
+
+### Exercise 1.2a
+> Select name, species, hair_color, skin_color, and eye_color from the starwars data. Use at least one helper function. 
+
+```{r}
+starwars %>% 
+  select(name, species, ends_with("color"))
+# or
+
+starwars %>% 
+  select(name, species, contains("color"))
+```
+
+## 1.2 Refersher on `filter()`
+
+Recall that `filter()` is sort of like the complement to select, and is for *filtering* the data for certain observations (rows). 
+
+### 1.2.1 Filters with one condition
+
+Filters can be relatively simple. For example, we could filter for starwars characters that are less than 100cm in height:
+
+```{r}
+starwars %>% 
+  filter(height < 100)
+```
+
+Or we could do even more advanced filtering, such as by filter for observations 1 SD above the average height:
+
+```{r}
+starwars %>% 
+  filter(height > mean(height, na.rm = TRUE) + sd(height, na.rm = TRUE)) # don't forget na.rm!
+```
+
+Speaking of NAs, let's see which characters have missing mass by filtering for rows where mass is NA.
+
+```{r}
+starwars %>% 
+  filter(mass == NA)
+```
+
+It give us an empty df. What happened? `NA` is a special case when it comes to logical filtering. A value can't equal NA, it *is* NA. This is a subtle distinction. I try to remember it by reminding myself that an unknown could be equal to anything, but it definitely *is* an unknown.
+
+So, if we want to filter for NAs, we have to use `is.na()`, which returns TRUE if an entry is NA. Let's try to get characters with missing mass again:
+
+```{r}
+starwars %>% 
+  filter(is.na(mass)) # note you wrap the variable in is.na()
+```
+
+To get the values that aren't missing, you have to put a `!` before `is.na()`, so it looks like `!is.na(variable)`. Let's get every observation that isn't mising on mass:
+
+```{r}
+starwars %>% 
+  filter(!is.na(mass))
+```
+
+This works because `!` converts a logical value to its opposite:
+
+```{r}
+!TRUE
+!FALSE
+! 5 == 5
+! 5 == 4
+```
+
+### 1.2.2 Filter with multiple conditions
+
+Recall that we can combine conditions using `&` or `|`. For example, we could get observations 1 SD above the mean of height and below the mean of mass
+
+```{r}
+starwars %>% 
+  filter(height > mean(height, na.rm = TRUE) + sd(height, na.rm = TRUE) &
+         mass < mean(mass, na.rm = TRUE))
+```
+
+We could get observations either 1 SD above *or* below the mean of height too:
+
+```{r}
+  starwars %>% 
+  filter(height > mean(height, na.rm = TRUE) + sd(height, na.rm = TRUE) |
+         height < mean(height, na.rm = TRUE) + sd(height, na.rm = TRUE))
+
+```
+
+You can also filter based on character variables. For example, we could get ever character grey hair:
+
+```{r}
+starwars %>% 
+  filter(hair_color == "grey")
+```
+
+Or characters that have grey or brown hair:
+
+```{r}
+starwars %>% 
+  filter(hair_color == "grey" |
+         hair_color == "brown")
+```
+
+Or characters that don't have brown hair:
+
+```{r}
+starwars %>% 
+  filter(hair_color != "brown")
+```
+
+You may be wandering if there is some way to extract those observations that have "grey" listed as one of several colors.
+
+It's a little tricky, but it can be done by using the `stringr` function `str_detect()`. We'll cover `stringr` in a bit more detail later, but recall that `str_detect()` can be used to look for a string in an object; it returns a logical (TRUE or FALSE) based on whether or not the string is found in that object. Let's use it in combination with `filter()` to get these salt & pepper starwars characters:
+
+```{r}
+starwars %>% 
+  filter(str_detect(hair_color, "grey")) # first argument is string var,
+                       # followed by pattern it looks for
+```
+
+Since `str_detect()` returns a logical, we can negate it with `!` to get the opposite (observations that don't contain the string `"grey"` in `hair_color`):
+
+```{r}
+starwars %>% 
+  filter(!str_detect(hair_color, "grey"))
+```
+
+### Exercise 1.2a
+> Starting with the starwars data frame, filter for characters thats birth year is at least 200. Select just their name, species, and birth_year.
+
+```{r}
+starwars %>% 
+  filter(birth_year >= 200)
+```
+
+### Exercise 1.2b
+> Starting with the starwars data frame, filter for characters that don't have blue in their eye color (hint: it could have more than one color) and print their name, eye_color, and species.
+
+```{r}
+starwars %>% 
+  filter(!str_detect(eye_color, "blue")) %>% 
+  select(name, eye_color, species)
+```
+
+### Exercise 1.2c
+> Starting with the starwars data frame, filter for droids from Tatooine or humans from Naboo. Select just name, homeworld, species, hair, eye, and skin color and display the columns in that order.
+
+```{r}
+starwars %>% 
+  filter(species == "Droid" & homeworld == "Tatooine" |
+           species == "Human" & homeworld == "Naboo") %>% 
+  select(name, homeworld, species, ends_with("color"))
+```
 
 ## 1.3 Transforming data with mutate() and transmute()
+
+The next verbs from dplyr we'll discuss are `mutate()` and `transmute()`. `mutate()` is for adding columns to a dataframe. `transmute()` is for replacing columns in a dataframe. Let's start with `mutate()`
+
+### 1.3.1 `mutate()`
+
+Recall from last time that we can add columns to a dataframe in base R using `data$new_col <-`. For example, we could add height in meters to our starwars data:
+
+```{r}
+starwars$height_in_m = starwars$height/100
+
+starwars 
+
+# cleaning it back up
+starwars <- starwars %>% 
+  select(-height_in_m)
+```
+
+In the `tidyverse`, we use `mutate()` instead. `mutate()` requires data as its first argument, followed by a set of expressions defining new columns, separated by a comma. For example, we could calculate height in meters and millimeters:
+
+```{r}
+starwars %>% 
+  mutate(height_in_mm = height*10,
+         height_in_m = height/100)
+```
+
+`mutate()` performs each calculation in order, so you can use variables created earlier within the same `mutate` call in later operations. For example, let's z score height and mass (using the base R function `scale()`) and then average them together using the base R function `rowMeans()`:
+
+```{r}
+starwars %>% 
+  mutate(height_z = scale(height),
+         mass_z = scale(mass),
+         height_mass_z = rowMeans(data.frame(height_z, mass_z), na.rm = TRUE))
+```
+
+As you can see, getting row means (i.e., mean for each row across a set of columns) can be a little clunky in `mutate()`. The `rowwise()` function is designed to make this easier. To use it, we call it before a `mutate()` call. Let's try it
+
+```{r}
+starwars %>% 
+  rowwise() %>% 
+  mutate(height_z = scale(height),
+         mass_z = scale(mass),
+         height_mass_z = mean(c(height_z, mass_z), na.rm = TRUE))
+```
+
+Oops, as you can see we got `NaN`, because it's trying to get z scores for each row, which are not defined. We would need to do two `mutate` calls and use the `rowwise()` function between them:
+
+```{r}
+starwars %>% 
+  mutate(height_z = scale(height),
+         mass_z = scale(mass)) %>% 
+  rowwise() %>% 
+  mutate(height_mass_z = mean(c(height_z, mass_z), na.rm = TRUE))
+```
+
+You can overwrite columns with `mutate()`. For example, gender is currently a character, but we could turn it using mutate to overwrite it:
+
+```{r}
+starwars %>%
+  mutate(gender = factor(gender))
+```
+
+
+### 1.3.2 `transmute()`
+
+`transmute()` is similar to mutate, but instead of returning the original data frame with the new (additional) columns, it returns just the new columns. For example, we could use `transmute` if we just wanted a dataframe of z scored height and mass:
+
+```{r}
+starwars %>% 
+  transmute(height_z = scale(height),
+         mass_z = scale(mass))
+```
+
+Note that this basically equivalent to doing a `mutate()` followed by a `select()` for the newly mutated columns.
+
+### Exercise 1.3a
+> Create a new variable called bmi that is each character's bmi. bmi = kg / m^2. Mass is already in kg units, but heigt is currently in cm units, so height will need to be converted (1m = 100cm). 
+
+```{r}
+starwars %>% 
+  mutate(height_in_m = height / 100,
+         bmi = mass / height_in_m^2)
+```
+
+### Exercise 1.3b
+> This time, do the same thing, but use transmute so that the resulting dataframe has just name, height in meters, mass, and bmi (hint: you can always mutate a variable to be equal to itself)
+
+```{r}
+starwars %>% 
+  transmute(name = name,
+            mass = mass, 
+            height_in_m = height / 100,
+            bmi = mass / height_in_m^2)
+```
 
 ## 1.4 Grouping Data with group_by()
 
@@ -99,53 +361,53 @@ starwars %>%
 
 ### 1.6.6 count()
 
-# 2. Cleaning & Reshaping Data with tidyr
+# 2. Introduction to ggplot2
+## 2.1 ggplot basics
+### 2.1.1 Grammar of Graphics
+### 2.1.2 Aesthetic mapping
+
+
+# 3. Cleaning & Reshaping Data with tidyr
 
 A table is tidy if:
 1. each  variable is its own colum, **and**
 2. each row is a single observation or case
 
-## 2.1 Lengthen with gather()
+## 3.1 Lengthen with gather()
 
-## 2.2 Widen with spread()
+## 3.2 Widen with spread()
 
-## 2.3 unite()
+## 3.3 unite()
 
-## 2.4 separate()
+## 3.4 separate()
 
-# 3. Factors with forcats
+# 4. Factors with forcats
 
-## 3.1 Inspecting Factors
-### 3.1.1 fct_count()
-### 3.1.2 fct_unique() 
+## 4.1 Inspecting Factors
+### 4.1.1 fct_count()
+### 4.1.2 fct_unique() 
 
-## 3.2 Chaning the Order of Levels
-### 3.2.1 fct_relevel()
-### 3.2.2 fct_rev
-### 3.2.3 fct_reorder 
+## 4.2 Chaning the Order of Levels
+### 4.2.1 fct_relevel()
+### 4.2.2 fct_rev
+### 4.2.3 fct_reorder 
 
-## 3.3 Combining & Changing Factors
-### 3.3.1 fct_c()
-### 3.3.2 fct_recode()
-### 3.3.2 fct_collapse()
-### 3.3.3 fct_lump()
+## 4.3 Combining & Changing Factors
+### 4.3.1 fct_c()
+### 4.3.2 fct_recode()
+### 4.3.2 fct_collapse()
+### 4.3.3 fct_lump()
 
-# 4. Manipulating strings with stringr
-## 4.1 str_detect()
+# 5. Manipulating strings with stringr
+## 5.1 str_detect()
 
-## 4.2 Changing case
-### 4.2.1 str_to_lower()
-### 4.2.2 str_to_upper()
-### 4.2.3 str_to_title()
+## 5.2 Changing case
+### 5.2.1 str_to_lower()
+### 5.2.2 str_to_upper()
+### 5.2.3 str_to_title()
 
-## 4.3 Changing content
-### 4.3.1 str_replace()
-### 4.3.2 str_pad()
-### 4.3.3 str_trunc()
-
-# 5. Introduction to ggplot2
-## 5.1 ggplot basics
-### 5.1.1 Grammar of Graphics
-### 5.1.2 Aesthetic mapping
-
+## 5.3 Changing content
+### 5.3.1 str_replace()
+### 5.3.2 str_pad()
+### 5.3.3 str_trunc()
 
