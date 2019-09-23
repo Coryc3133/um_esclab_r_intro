@@ -1,7 +1,7 @@
 ---
-title: "Introduction to R"
+title: "R Bootcamp Day 1: Introduction to R & the tidyverse"
 author: "Cory Costello"
-date: "9/18/2019"
+date: "9/23/2019"
 output: 
   html_document:
     toc: true
@@ -51,9 +51,7 @@ Thankfully, R follows the order of operations (PEMDAS).
 (2^3)+4*(5/3)
 ```
 
-These values aren't stored anywhere though. This brings me to the first general coding principal of the day:
-
-*Computers tend to take things literally, and do exactly what you ask.* So, when you tell R to divide 6 by 2 (`6/2`), it does exactly that, but it doesn't save it in memory. You have to tell it to do that too.
+These values aren't stored anywhere though.
 
 ## 1.2 Storing values in objects
 To keep a value in memory, we need to assign it to an **object**. 
@@ -70,7 +68,7 @@ Now we can call `x` by name; if we do this, it will print the value.
 x
 ```
 
-Although `<-` and `=` both work, we'll strictly use `<-` from here on out. This brings us to our second general coding principal of the day:
+Although `<-` and `=` both work, we'll strictly use `<-` from here on out. This brings up a general coding principal of the day:
 
 *Style is important!* You want to use a consistent style so that others (including your future self) can easily and quickly read your code. I'll be using [Hadley Wickham's Style Guide](http://adv-r.had.co.nz/Style.html) from here on out, part of which is assigning variables with `<-`. Remember, the keyboard shortcut `Alt+-` or `Option+-` can be used to insert a `<-`.
 
@@ -81,7 +79,7 @@ Now, let's take a look at the variable `y`:
 y 
 ```
 
-D'oh! We didn't assign anything to `y`, so R is telling us that it doesn't exist the best way it knows how. 
+D'oh! We didn't assign anything to `y`. Calling a variable that doesn't exist leads to an `Error`, 
 ```{r}
 # Need to assign something to y!
 y <- 2
@@ -106,11 +104,11 @@ z <- x * y
 ## 1.3 Naming Variables
 You may be wondering how to name variables in R. Well, there are just a few rules:
 
-1. object names must start with a letter
+1. object names must start with a letter.
 2. can contain alphanumeric characters, "_", and ".".
 3. R is case sensitive, so `R` and `r` would be different variables.
 
-This is another element of *style*. Using a consistent style when naming variables is crucial to maintaining your sanity. 
+This is another element of *style*. Using a consistent style when naming variables makes your life easier. 
 
 Some options include:
 
@@ -188,11 +186,11 @@ You'll notice that x has changed in the environment pane. Since it's a vector, i
 
 We can also create a sequence using the function `seq()`. `seq()` is a function that creates a sequence of numbers. Like all R functions, you can learn more about it by accessing the help documentation (`?+function_name`). Let's take a look:
 
-```{r}
+```{r eval = FALSE}
 ?seq
 ```
 
-Interpreting R help documention is a skill itself, but a very worthwhile one. I promise that it gets easier. 
+Interpreting R help documention is a skill itself, but a very worthwhile one.
 
 What happens if we run `seq()` with no arguments?
 ```{r}
@@ -226,7 +224,9 @@ x <- c(2, 8.5, 1, 9)
 
 Note that it became a numeric vector (hence `num`), which is different from a vector of integers in that it allows decimal points. This brings us to an important feature of vectors:
 
-Vectors are just 1-dimensional sequences **of a single type of data**. Because `1:5` will just be integers, R stored the vector as `int`. Since we have `8.5` in our new x vector, it will convert x to a numeric vector (which permits decimals). The general rule R uses is to set the vector to be the most permissive type necessary. 
+Vectors are just 1-dimensional sequences **of a single type of data**. Because `1:5` was just integers, R stored the vector as `int`. Since we have `8.5`, all of the values will be numbers, even the data that could be integers. 
+
+The general rule R uses is to set the vector to be the most permissive type necessary. 
 
 Note that vectors can also include strings or character values.
 
@@ -300,47 +300,60 @@ as.numeric(mixed_vec)
 
 ### 2.2.2 Indexing vectors
 
-The last thing to mention about vectors is that they are all indexed numerically in R, starting with 1. Since vectors are only 1 dimension, we index them with a single number in `[]`. Let's get just the first element of the vector `q` we made in the exercises above:
+The last thing to mention about vectors is that they are all indexed numerically in R, starting with 1. Since vectors are only 1 dimension, we index them with a single number in `[]`. Let's get just the first element of a new vector `z`:
 
 ```{r}
-q[1]
+z <- 6:10
+z[1]
 ```
 
 What if we wanted the first two elements? We could do this by passing the sequence `1:2` as our index:
 
 ```{r}
-q[1:2]
+z[1:2]
 ```
 
 Or, we could get the first and third element by passing those indexes as a vector using `c()`:
 
 ```{r}
-q[c(1, 3)]
+z[c(1, 3)]
+```
+
+We could also say which elements not to give us. Let's get rid of the first element:
+
+```{r}
+z[-1]
+```
+
+Or the first and third:
+```{r}
+z[-c(1, 3)]
 ```
 
 Finally, if the elements in the vector have names, we can refer to them by name instead of their numerical index. You can see the names of a vector using `names()`
 
 ```{r}
-names(q)
+names(z)
 ```
 
-Looks like the elements in X have no names. We can change that by assigning them names using a vector of names:
+Looks like the elements in z have no names. We can change that by assigning them names using a vector of names:
 
 ```{r}
-names(q) <- c("first", "second", "third", "fourth", "fifth")
+names(z) <- c("first", "second", "third", "fourth", "fifth")
 ```
 
 And we can see the names:
 
 ```{r}
-names(q) 
+names(z) 
+z
 ```
 
 And use them to subset certain elements
 
 ```{r}
-q["first"]
-q[1]
+z["first"]
+z[1]
 ```
 
 ## Exercise 2.2.2a. 
@@ -440,7 +453,7 @@ cory$year
 
 ### Exercise 2.3.2a.
 
-> Create a list like mine that is made up of `year`, `name`, `enrollment`, `fave_data`, but corresponds to you (professors can use years as a prof, years since PhD, or make a number up). Make sure you enter two types of favorite data (bc who could choose?!). Make it print your name.
+> Create a list like mine that is made up of `year`, `name`, `enrollment`, `fave_data`, but corresponds to you (professors, or postdocs can use year in position, years since PhD, or make a number up). Make sure you enter two types of favorite data (bc who could choose?!). Make it print your name.
 
 ```{r}
 
@@ -480,7 +493,7 @@ cory$fave_data[2]
 Matrices are 2-dimensional objects that store a single type of data, so you can think of them like a 2-dimensional vector.
 
 ### 2.4.1 Creating Matrices
-We cam create matrices using the `matrix()` function. For example, let's create a 2 X 2 matrix of the numbers 1 to 4.
+We can create matrices using the `matrix()` function. For example, let's create a 2 X 2 matrix of the numbers 1 to 4.
 
 ```{r}
 mat <- matrix(data = c(1, 2, # data in either row-wise or column-wise order
@@ -588,14 +601,14 @@ mat["r1", 2]
 Arrays are like matrices, but can have N-dimensions (more than 2).
 
 ```{r}
-array(c(mat2, mat2*2), dim =c(3, 3, 2))
+array(c(mat, mat*2, mat*3), dim =c(2, 2, 3))
 ```
 
 Most of us don't have to use arrays that often, so we'll leave it at that.
 
 ## 2.5. Data Frames
 
-Now you might be thinking 'what's all this noise about vectors, lists, matrices, and arrays? I work with data!' Well, R has a type for you too! The `data.frame` object is like a matrix in that it has 2 dimensions, but it can contain heterogeneous data like a list. The indexing works like a sort of hybrid of the two as you'll soon see.
+The `data.frame` object is like a matrix in that it has 2 dimensions, but it can contain heterogeneous data like a list. The indexing works like a sort of hybrid of the two as you'll soon see.
 
 ### 2.5.1 Creating Data Frames 
 
@@ -609,10 +622,11 @@ df_1
 Note that we can also create a dataframe very similarly to how we made a list, but replacing `list()` with `data.frame()`:
 
 ```{r}
-df_1 = data.frame(c1 = c(1, 3),
-                  c2 = c(2, 4), 
-                  c3 = c("a", "b"),
+df_1 <- data.frame(c1 = c(1, 3),
+                   c2 = c(2, 4), 
+                   c3 = c("a", "b"),
                   row.names = c("r1", "r2"))
+df_1
 ```
 
 ### 2.5.2 Indexing Data Frames
@@ -711,15 +725,15 @@ seq()
 Let's take a look at a new function, `mean()`. This is used to get the mean of a set of numbers. What happens if we run it without any arguments?
 
 ```{r eval = FALSE}
-mean()
+?mean()
 ```
 
 We get an error telling us that the argument "x" is missing and has no default. Whenever you see this error, it means you are missing a required argument (i.e., an argument without a default). If we look at the documention, you can see x is the data from which to calculate a mean.
 
-Let's see what happens when we run `mean()` on the matrix `mat2` we create
+Let's see what happens when we run `mean()` on the matrix `mat` we created eariler:
 
 ```{r}
-mean(mat2)
+mean(mat)
 ```
 
 Note that `mean()` has two more optional arguments listed: `trim`, which returns a trimmed mean, and `na.rm` which takes a logical value indicating if it should remove missing values or not before it calculates the mean (set to `FALSE` by default). What happens if we don't remove NAs before calculating the mean? Let's check it out.
@@ -750,15 +764,15 @@ length(vec_w_na)
 `nrow()` and `ncol()` can be used to get the number of rows or columns in a matrix or data frame:
 
 ```{r}
-nrow(df_2)
-ncol(df_2)
+nrow(df_1)
+ncol(df_1)
 nrow(mat)
 ncol(mat)
 ```
 
 ## 3.2. Arguments are Positional
 
-Take another look at the `sd()` function documentation (`?sd`). Notice that there are two arguments and they are in order, `x` followed by `na.rm = FALSE`. You can set arguments by name:
+Take a look at the `sd()` function documentation (`?sd`). Notice that there are two arguments and they are in order, `x` followed by `na.rm = FALSE`. You can set arguments by name:
 
 ```{r}
 sd(x = vec_w_na, na.rm = TRUE)
@@ -786,6 +800,12 @@ mean(vec_w_na, TRUE)
 > What happenned?     
 **A: **
 
+```{r}
+mean(vec_w_na, na.rm = TRUE) # or...
+mean(vec_w_na, 0, TRUE)
+```
+
+
 ## 3.3. User-defined functions
 
 You can also make your own functions. In fact, that is where most of the R functions we use come from, someone making their own function and then sharing it with everyone. For example, let's make a function that calculates the mean of a vector, and prints it in the format: "The mean is _", where the blank is filled in with the mean.
@@ -797,7 +817,7 @@ Within the parantheses, you put the arguments. Then you define the *body* of the
 ```{r}
 pretty_mean <- function(data){
   mean <- mean(data, na.rm = TRUE)
-  paste("The Mean is", mean)
+  x <- paste("The Mean is", mean)
 }
 ```
 
@@ -808,6 +828,18 @@ pretty_mean(vec_w_na)
 ```
 
 Notice that it works how we expected it to, and also it didn't create an object in our global environment called `mean`. That variables within a function are local; they only exist within that function (they don't get created in the global environment). 
+
+```{r}
+pretty_mean <- function(data, excited = TRUE){
+    mean <- mean(data, na.rm = TRUE)
+    if(excited == FALSE){x <- paste("The Mean is", mean)}
+    if(excited == TRUE){x <- paste("The Mean is", mean, "!")}
+    print(x)
+}
+
+pretty_mean(vec_w_na)
+pretty_mean(vec_w_na, excited = FALSE) # tone it down
+```
 
 Obviously, we can make much more complicated functions, but we will leave it there for now.
 
@@ -868,6 +900,7 @@ Installing a package puts a copy of it into our personal library that R has acce
 
 ```{r}
 library(rio)
+library("rio") # also works
 ```
 
 Now that we've opened `rio`, we have access to its functions like `import()` and `export()`.
@@ -923,9 +956,10 @@ Reading in data generally has two slightly challenging aspects for new users:
 
 2. You need to tell R where to look.
 
-We'll use `import()` from `rio`, which does the first part for us. We just call `import()` and it calls the right read function given the file's extension (`.csv`, `.txt`, `.save`, `.xlsx`, etc.). 
+We'll use `import()` from `rio`, which does the first part for us. We just call `import()` and it calls the right read function given the file's extension (`.csv`, `.txt`, `.sav`, `.xlsx`, etc.). 
 
 ## 4.1 Working Directories & File Paths 
+
 On to challeng # 2. When R looks for a file, it has a starting point. This is called the *working directory*. The working directory that you're currently in is displayed in the console window and the files tab. You can also get it with the `getwd()` function:
 
 ```{r}
@@ -974,7 +1008,7 @@ You can see all of the file formats `rio` works with by running `?import`.
 
 ### 4.2.2 Exporting Data
 
-You can also use rio to export your data, saving it in any of the formats that it works with. This is really simple and works just like `import()`, but is called `export()`. For `export()`, you provide the R dataframe object you want to export, and the path/name for the new file. For example, let's say I want to export `ps_data` as an csv file and put it into the `/data` subdirectory. I could do that with export:
+You can also use rio to export your data, saving it in any of the formats that it works with. This is really simple and works just like `import()`, but is called `export()`. For `export()`, you provide the R dataframe object you want to export, and the path/name for the new file. For example, let's say I want to export `ps_data` as an xlsx file and put it into the `/data` subdirectory. I could do that with export:
 
 ```{r}
 export(ps_data,
@@ -1023,7 +1057,7 @@ The most obvious way is to click on the View button in the environment pane. You
 View(ps_data)
 ```
 
-Note that the V in `View()`.
+Note that the V in `View()` is capital!.
 
 ### 4.3.2 head and tail
 
@@ -1118,6 +1152,7 @@ Or, we could get all of the rows where subjects are greater than or equal to 2.5
 
 ```{r}
 ps_data[which(ps_data$age >= 2.5),]
+
 ```
 
 You can also use logical tests for columns, though that is a little trickier. Let's get all of the columns that start with the letter c. We can look for variables that start with c by using `str_detect()` on the column names, looking for entries that start with c `"^c"`.
@@ -1176,7 +1211,7 @@ mean(ps_data$age)
 ```
 
 ### Exercise 5.2a
-> Let's center age. Create a new column called age_centered in which you center age by subtracting the mean age from the age column (hint: you can create new columns using assignment: `df$new_col <-`).
+> Let's center age. Create a new column called age_centered in which you center age by subtracting the mean age from the age column (hint: you can create new columns using assignment: `df$new_col <- x`).
 
 ```{r}
 
@@ -1216,6 +1251,8 @@ The `select()` is the first verb we'll cover and is how we can subset columns. I
 
 `select()` is the verb for selecting columns from a dataframe. The first argument is data followed which columns you would like to select.
 
+#### 6.1.1.1 Basics of Select
+
 You can indicate the columns you want to select using unquoted names. For example, let's select just `age` from `ps_data`
 
 ```{r}
@@ -1228,28 +1265,22 @@ You can select more columns by adding them, separated by a comma. Let's get age 
 select(ps_data, age, condition)
 ```
 
-You can also use columns' positions. We could get `sub_id`, the first column, by supplying a 1:
+You can also use columns' positions. We could get `subid`, the first column, by supplying a 1:
 
 ```{r}
 select(ps_data, 1)
 ```
 
-Or we could get the first three columns:
+Or, you can say which variable you don't want by prefacing its name or index with a `-`. For example, let's get rid of age.
 
 ```{r}
-select(ps_data, 1:3)
-```
-
-Or, you can say which variable you don't want by prefacing its name or index with a `-`. For example, let's get rid of centered age, which we created earlier:
-
-```{r}
-select(ps_data, -centered_age)
+select(ps_data, -age)
 ```
 
 You could also get rid of by referencing its index:
 
 ```{r}
-select(ps_data, -6)
+select(ps_data, -5)
 ```
 
 You can also use `:` to select or de-select a range of variables. This can be done with reference to their numerical index:
@@ -1259,7 +1290,7 @@ You can also use `:` to select or de-select a range of variables. This can be do
 select(ps_data, 1:3)
 
 # de-select last three:
-select(ps_data, -(1:3))
+select(ps_data, -(1:3)) # - requires parenthetical sequence
 ```
 
 And you can even use ranges of variable names. 
@@ -1267,11 +1298,16 @@ And you can even use ranges of variable names.
 # select first three
 select(ps_data, subid:correct)
 
-# select last three
+# deselect first three
 select(ps_data, -(subid:correct))
 ```
 
-The best part of select is that it has special helper function to perform common kinds of selection tasks. For example, let's say we want all the variables that start with 'c'. We can use the `starts_with()` helper function:
+#### 6.1.1.2 Helper functions
+
+The best part of select is that it has special helper function to perform common kinds of selection tasks.
+
+##### starts_with
+For example, let's say we want all the variables that start with 'c'. We can use the `starts_with()` helper function:
 
 ```{r}
 select(ps_data, starts_with("c"))
@@ -1283,7 +1319,19 @@ That is way simpler than the base R solution we discussed above, which was
 ps_data[,which(str_detect(colnames(ps_data), "^c"))]
 ```
 
-The helper functions are:
+#### ends_with
+Select columns that end with some character:
+```{r}
+select(ps_data, ends_with("e"))
+```
+
+#### contains
+Select columns that contain a character.
+```{r}
+select(ps_data, contains("i"))
+```
+
+There are others too, but these are the most common. Here is a table of all of them.
 
 function | what it does
 ---------|-------------
@@ -1378,7 +1426,7 @@ We can make this look even a little cleaner by using the `select()` function:
 ```{r}
 ps_data %>% # take the data, then...
   select(age) %>%  # select age, then...
-  mean()
+  mean() # take the mean
 ```
 
 Notice that we entered age as an argument in select and it *looks* like the first argument. Looks can be deceiving; the first argument is actually `.data = ps_data`, but that is hidden from view when piping.
@@ -1399,7 +1447,7 @@ ps_data$age %>%
 
 ### 6.3.3 Why use pipes?
 
-There are probably lots of reasons to use or not use pipes. The most important and most often mentioned reasons to use pipes are *cleanliness* (which I hear is next to *godliness*) and efficiency:
+The most important and most often mentioned reasons to use pipes are *cleanliness* (which I hear is next to *godliness*) and efficiency:
 
 1. Cleaner code
     * This is nice, because it helps make your code more readable by other humans (including your future self).
@@ -1433,11 +1481,11 @@ mean(select(ps_data, age), na.rm = TRUE)
 
 The gains in cleanliness and efficiency scale with the complexity of what you're doing. 
 
-Let's say, we wanted to take our ps_data, filter for observations from kids between 2.5 and 3.2, and then select just the subject id and mean-centered age variables, and then get unique kids (using the `unique()` function on the subject id).
+Let's say, we wanted to take our ps_data, filter for observations from kids between 2.5 and 3.2, and then select just the subject id and age variables, and then get unique kids (using the `unique()` function on the subject id).
 
 Without pipes, you'll either end up with some difficult to read code:
 ```{r, eval = FALSE}
-unique(select(filter(ps_data, age > 2.5 | age < 3.2), centered_age, subid))
+unique(select(filter(ps_data, age > 2.5 | age < 3.2), age, subid))
 ```
 or some throwaway objects:
 ```{r, eval = FALSE}
@@ -1451,7 +1499,7 @@ With pipes, we can avoid these issues:
 ```{r}
 ps_data %>% # take the data, then...
   filter(age > 2.5 | age > 3.2) %>% # filter for kids between 2.5 and 3.2, then...
-  select(subid, centered_age) %>% # select subject id and centered age, then...
+  select(subid, age) %>% # select subject id and centered age, then...
   unique() # get unique rows
 ```
 
@@ -1461,9 +1509,9 @@ See, so much easier to read, and not flooding our enviornment with clutter and n
 
 Keep in mind that, like everything in R, you have to tell R to save the output of your pipe using the `<-`.
 ```{r}
-ps_data %>% # take the data, then...
+unique_filtered_data <- ps_data %>% # take the data, then...
   filter(age > 2.5 | age > 3.2) %>% # filter for kids between 2.5 and 3.2, then...
-  select(subid, centered_age) %>% # select subject id and centered age, then...
+  select(subid, age) %>% # select subject id and centered age, then...
   unique() # get unique rows
 ```
 
@@ -1472,7 +1520,10 @@ ps_data %>% # take the data, then...
 > Take the `another_df` dataset. Using select and filter, get the number correct for kids at least 4 years old (note: there are several ways to do this, but the sum() function may be helpful). The output of your pipe should be a single number.
 
 ```{r}
-
+ps_data %>% 
+  filter(age >= 4) %>% 
+  select(correct) %>% 
+  sum()
 ```
 
 Okay, that's it for this time! Next time we'll dive deeper into the `tidyverse()`, learning the rest of the main verbs in `dplyr`, how to tidy data with `tidyr`, working with strings and factors (using `stringr` and `forcats`), and how to visualize data with ggplot2.
