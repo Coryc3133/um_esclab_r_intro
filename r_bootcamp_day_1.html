@@ -2786,12 +2786,12 @@ div.tocify {
 <p>By the end of this tutorial, you will know:</p>
 <ul>
 <li>Basic <code>R</code> usage (using <code>R</code> as a calculator, creating variables, indexing)</li>
-<li>How R represents Data</li>
+<li>Basic types of data in R</li>
 <li>How to read in and examine data</li>
 <li>How to get values out of the rows and columns in your data</li>
 <li>Basic iteration (for loops and functions)</li>
+<li>Begin understanding tidyverse “verbs”</li>
 <li>What a pipe is and how to use pipes to chain together <code>tidyverse</code> verbs</li>
-<li>Begin understanding tidyverse “verbs” (we’ll continue on Thursday)</li>
 </ul>
 <p>The best way to do this tutorial is to walk through it slowly, executing each line and trying to understand what it does. You can execute a single line by placing your cursor somewhere in that line and hitting CTRL+enter on a PC or CMD+enter on a mac; you can execute a whole chunk at a time by hitting CTRL+shift+enter on a PC.</p>
 </div>
@@ -3080,7 +3080,9 @@ mixed_vec</code></pre>
 </div>
 <div id="indexing-vectors" class="section level3">
 <h3>2.2.2 Indexing vectors</h3>
-<p>The last thing to mention about vectors is that they are all indexed numerically in R, starting with 1. Since vectors are only 1 dimension, we index them with a single number in <code>[]</code>. Let’s get just the first element of a new vector <code>z</code>:</p>
+<div id="numerical-indexing" class="section level4">
+<h4>2.2.2.1 Numerical Indexing</h4>
+<p>Vectors are all indexed numerically in R, starting with 1. Since vectors are only 1 dimension, we index them with a single number in <code>[]</code>. Let’s get just the first element of a new vector <code>z</code>:</p>
 <pre class="r"><code>z &lt;- 6:10
 z[1]</code></pre>
 <pre><code>## [1] 6</code></pre>
@@ -3096,7 +3098,10 @@ z[1]</code></pre>
 <p>Or the first and third:</p>
 <pre class="r"><code>z[-c(1, 3)]</code></pre>
 <pre><code>## [1]  7  9 10</code></pre>
-<p>Finally, if the elements in the vector have names, we can refer to them by name instead of their numerical index. You can see the names of a vector using <code>names()</code></p>
+</div>
+<div id="name-indexing" class="section level4">
+<h4>2.2.2.2 Name Indexing</h4>
+<p>If the elements in the vector have names, we can refer to them by name instead of their numerical index. You can see the names of a vector using <code>names()</code></p>
 <pre class="r"><code>names(z)</code></pre>
 <pre><code>## NULL</code></pre>
 <p>Looks like the elements in z have no names. We can change that by assigning them names using a vector of names:</p>
@@ -3115,11 +3120,41 @@ z[1]</code></pre>
 <pre><code>## first 
 ##     6</code></pre>
 </div>
+<div id="manipulating-elements-in-vectors" class="section level4">
+<h4>2.2.2.3 Manipulating elements in vectors</h4>
+<p>One thing that you can do with indexing is change elements within the vector. For example, we could change the first elemenet of <code>z</code> to missing, or <code>NA</code>:</p>
+<pre class="r"><code>z[1] &lt;- NA
+z</code></pre>
+<pre><code>##  first second  third fourth  fifth 
+##     NA      7      8      9     10</code></pre>
+<p>You can also use indexing to transform a single element in a vector. Let’s raise the second element to the power of 2:</p>
+<pre class="r"><code>z[2] &lt;- z[2]^2
+z</code></pre>
+<pre><code>##  first second  third fourth  fifth 
+##     NA     49      8      9     10</code></pre>
+<p>Or use it to add to a vector. Let’s add the number 11 as the sixth element of the vector z</p>
+<pre class="r"><code>z[6] &lt;- 11
+z</code></pre>
+<pre><code>##  first second  third fourth  fifth        
+##     NA     49      8      9     10     11</code></pre>
+<p>And you can add a name for that element by referencing the index for the <code>names</code> attribute of <code>z</code>:</p>
+<pre class="r"><code>names(z)[6] &lt;- &quot;sixth&quot;
+z</code></pre>
+<pre><code>##  first second  third fourth  fifth  sixth 
+##     NA     49      8      9     10     11</code></pre>
+</div>
+</div>
 </div>
 <div id="exercise-2.2.2a." class="section level2">
 <h2>Exercise 2.2.2a.</h2>
 <blockquote>
 <p>Create a vector called <code>named</code> that includes the numbers 1 to 5. Name each value a, b, c, d, and e (in order). Print the first element using numerical indexing and the last element using name indexes.</p>
+</blockquote>
+</div>
+<div id="exercise-2.2.2b." class="section level2">
+<h2>Exercise 2.2.2b.</h2>
+<blockquote>
+<p>Change the third element of <code>named</code> to the value 21 and then show your results.</p>
 </blockquote>
 </div>
 <div id="lists" class="section level2">
@@ -3179,7 +3214,10 @@ cory</code></pre>
 </div>
 <div id="indexing-lists" class="section level3">
 <h3>2.3.2 Indexing Lists</h3>
-<p>Like vectors, lists can be indexed by their name or their position (numerically). For example, if we wanted the year variable, we could get it out using its position as the first element of my list:</p>
+<p>Like vectors, lists can be indexed by their name or their position (numerically).</p>
+<div id="indexing-lists-numerically" class="section level4">
+<h4>2.3.2.1 Indexing Lists Numerically</h4>
+<p>For example, if we wanted the year variable, we could get it out using its position as the first element of my list:</p>
 <pre class="r"><code>cory[1]</code></pre>
 <pre><code>## $year
 ## [1] 5</code></pre>
@@ -3191,6 +3229,9 @@ cory</code></pre>
 <p>Notice it no longer has the <code>$year</code>; <code>$label</code> is a hint that you’re looking at a list and not the object stored at that position. Now let’s see my PhD year in dog years:</p>
 <pre class="r"><code>cory[[1]] * 7</code></pre>
 <pre><code>## [1] 35</code></pre>
+</div>
+<div id="indexing-lists-by-name" class="section level4">
+<h4>2.3.2.1 Indexing Lists by Name</h4>
 <p>The same applies to name indexing. With lists, you can get a list containing the indexed object with <code>[]</code>:</p>
 <pre class="r"><code>cory[&quot;year&quot;]</code></pre>
 <pre><code>## $year
@@ -3201,6 +3242,44 @@ cory</code></pre>
 <p>You can also use <code>list$name</code> to get the object stored with a particular name too:</p>
 <pre class="r"><code>cory$year</code></pre>
 <pre><code>## [1] 5</code></pre>
+</div>
+<div id="manipulating-lists-with-indexes" class="section level4">
+<h4>Manipulating Lists with Indexes</h4>
+<p>Just like vectors, we can change or add elements to our list using indexing. For example, let’s save the dog years transformation of the year element as <code>dog_years</code></p>
+<pre class="r"><code>cory[[&quot;dog_years&quot;]] &lt;- cory[[&quot;year&quot;]] * 7
+cory</code></pre>
+<pre><code>## $year
+## [1] 5
+## 
+## $name
+## [1] &quot;Cory Costello&quot;
+## 
+## $enrollment
+## [1] TRUE
+## 
+## $fave_data
+## [1] &quot;strings&quot; &quot;numbers&quot;
+## 
+## $dog_years
+## [1] 35</code></pre>
+<p>This would also work:</p>
+<pre class="r"><code>cory$dog_years &lt;- cory$year*7
+cory</code></pre>
+<pre><code>## $year
+## [1] 5
+## 
+## $name
+## [1] &quot;Cory Costello&quot;
+## 
+## $enrollment
+## [1] TRUE
+## 
+## $fave_data
+## [1] &quot;strings&quot; &quot;numbers&quot;
+## 
+## $dog_years
+## [1] 35</code></pre>
+</div>
 </div>
 <div id="exercise-2.3.2a." class="section level3">
 <h3>Exercise 2.3.2a.</h3>
@@ -3379,14 +3458,43 @@ df_1</code></pre>
 <pre class="r"><code>df_1$c1[1]</code></pre>
 <pre><code>## [1] 1</code></pre>
 </div>
+<div id="modifying-a-dataframe-with-indexes" class="section level3">
+<h3>2.5.2.1 Modifying a Dataframe with Indexes</h3>
+<p>Just like lists, vectors, and matrices, you can modify a dataframe and add new elements or change exising elements by referencing indexes.</p>
+<p>We could create c4 as the sum of c1 and c2:</p>
+<pre class="r"><code>df_1$c4 &lt;- df_1$c1 + df_1$c2
+df_1</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["c1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["c2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["c3"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["c4"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"2","3":"a","4":"3","_rn_":"r1"},{"1":"3","2":"4","3":"b","4":"7","_rn_":"r2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Or we could replace an element using indexing too. Let’s replace c1 with c1^2:</p>
+<pre class="r"><code>df_1$c1 =df_1$c1^2
+df_1</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["c1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["c2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["c3"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["c4"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"2","3":"a","4":"3","_rn_":"r1"},{"1":"9","2":"4","3":"b","4":"7","_rn_":"r2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
 <div id="structure-types-coercion-in-dfs" class="section level3">
 <h3>2.5.3 Structure, Types, &amp; Coercion in Dfs</h3>
 <p>How can we tell what type of data each column stores? We can use the <code>str()</code> function to get the <em>structure</em> of the data:</p>
 <pre class="r"><code>str(df_1)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    2 obs. of  3 variables:
-##  $ c1: num  1 3
+<pre><code>## &#39;data.frame&#39;:    2 obs. of  4 variables:
+##  $ c1: num  1 9
 ##  $ c2: num  2 4
-##  $ c3: Factor w/ 2 levels &quot;a&quot;,&quot;b&quot;: 1 2</code></pre>
+##  $ c3: Factor w/ 2 levels &quot;a&quot;,&quot;b&quot;: 1 2
+##  $ c4: num  3 7</code></pre>
+<p>You can also coerce individual columns into other types. For example, we could turn c1 into an integer (from a numeric/double):</p>
+<pre class="r"><code>df_1$c1 &lt;- as.integer(df_1$c1)
+df_1</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["c1"],"name":[1],"type":["int"],"align":["right"]},{"label":["c2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["c3"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["c4"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"2","3":"a","4":"3","_rn_":"r1"},{"1":"9","2":"4","3":"b","4":"7","_rn_":"r2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 <div id="a" class="section level3">
 <h3>2.5.2a</h3>
@@ -3401,7 +3509,7 @@ df_1</code></pre>
 <div id="b" class="section level3">
 <h3>2.5.2b</h3>
 <blockquote>
-<p>Using df_2, add the first and second columns together. what happens? Why?</p>
+<p>Using df_2, add a fourth column, c4, which is the first and second columns multiplied together.</p>
 </blockquote>
 </div>
 <div id="c" class="section level3">
@@ -3475,7 +3583,7 @@ mean(vec_w_na)</code></pre>
 <pre class="r"><code>nrow(df_1)</code></pre>
 <pre><code>## [1] 2</code></pre>
 <pre class="r"><code>ncol(df_1)</code></pre>
-<pre><code>## [1] 3</code></pre>
+<pre><code>## [1] 4</code></pre>
 <pre class="r"><code>nrow(mat)</code></pre>
 <pre><code>## [1] 2</code></pre>
 <pre class="r"><code>ncol(mat)</code></pre>
@@ -3514,9 +3622,11 @@ mean(vec_w_na)</code></pre>
 <pre class="r"><code>pretty_mean &lt;- function(data){
   mean &lt;- mean(data, na.rm = TRUE)
   x &lt;- paste(&quot;The Mean is&quot;, mean)
+  print(x)
 }</code></pre>
 <p>Now let’s test it out on our <code>vec_w_na</code> object:</p>
 <pre class="r"><code>pretty_mean(vec_w_na)</code></pre>
+<pre><code>## [1] &quot;The Mean is 3.375&quot;</code></pre>
 <p>Notice that it works how we expected it to, and also it didn’t create an object in our global environment called <code>mean</code>. That variables within a function are local; they only exist within that function (they don’t get created in the global environment).</p>
 <pre class="r"><code>pretty_mean &lt;- function(data, excited = TRUE){
     mean &lt;- mean(data, na.rm = TRUE)
@@ -3763,8 +3873,8 @@ library(&quot;rio&quot;) # also works</code></pre>
 </div>
 </div>
 </div>
-<div id="indexing-and-modifying-a-data-frame-in-base-r." class="section level1">
-<h1>5. Indexing and Modifying a data frame in base R.</h1>
+<div id="more-advanced-indexing-and-modifying-a-data-frame-in-base-r." class="section level1">
+<h1>5. More Advanced Indexing and Modifying a data frame in base R.</h1>
 <div id="indexing" class="section level2">
 <h2>5.1 Indexing</h2>
 <p>Let’s start by reviewing indexing dataframes.</p>

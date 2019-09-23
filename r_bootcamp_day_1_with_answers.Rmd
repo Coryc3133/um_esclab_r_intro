@@ -368,15 +368,49 @@ z["first"]
 z[1]
 ```
 
+#### 2.2.2.3 Manipulating elements in vectors
+
+One thing that you can do with indexing is change elements within the vector. For example, we could change the first elemenet of `z` to missing, or `NA`:
+
+```{r}
+z[1] <- NA
+z
+```
+
+You can also use indexing to transform a single element in a vector. Let's raise the second element to the power of 2:
+
+```{r}
+z[2] <- z[2]^2
+z
+```
+
+Or use it to add to a vector. Let's add the number 11 as the sixth element of the vector z
+
+```{r}
+z[6] <- 11
+z
+```
+
+And you can add a name for that element by referencing the index for the `names` attribute of `z`:
+
+```{r}
+names(z)[6] <- "sixth"
+z
+```
+
 ## Exercise 2.2.2a. 
 
 > Create a vector called `named` that includes the numbers 1 to 5. Name each value a, b, c, d, and e (in order). Print the first element using numerical indexing and the last element using name indexes. 
 
 ```{r}
-named <- 1:5
-names(named) <- c("a", "b", "c", "d", "e")
-named[1]
-named["e"]
+
+```
+
+## Exercise 2.2.2b.
+> Change the  third element of `named` to the value 21 and then show your results.
+
+```{r}
+
 ```
 
 ## 2.3 Lists
@@ -390,7 +424,7 @@ Lists are like vectors in that they are a 1-dimensional object, but they can con
 We can create a list with the `list()` function:
 
 ```{r}
-cory <- list(5L,
+cory <- list(6L,
              "Cory Costello",
              TRUE)
 
@@ -400,7 +434,7 @@ cory
 And, we can give each of these entries names to make things a little easier to keep track of:
 
 ```{r}
-cory <- list(year = 5L,
+cory <- list(year = 6L,
              name = "Cory Costello",
              enrollment = TRUE)
 
@@ -416,7 +450,7 @@ names(cory)
 Lists are even more flexible than you've seen so far. In addition to being of heterogeneous type, each element of a list can be of different dimensions. Let's add another element to the list about me that contains my favorite types of data, which will be a vector of length 2:
 
 ```{r}
-cory <- list(year = 5L,
+cory <- list(year = 6L,
              name = "Cory Costello",
              enrollment = TRUE, 
              fave_data = c("strings", "numbers")) # note c() to create a vector
@@ -425,7 +459,11 @@ cory
 
 ### 2.3.2 Indexing Lists
 
-Like vectors, lists can be indexed by their name or their position (numerically). For example, if we wanted the year variable, we could get it out using its position as the first element of my list:
+Like vectors, lists can be indexed by their name or their position (numerically). 
+
+#### 2.3.2.1 Indexing Lists Numerically
+
+For example, if we wanted the year variable, we could get it out using its position as the first element of my list:
 
 ```{r}
 cory[1]
@@ -449,6 +487,8 @@ Notice it no longer has the `$year`; `$label` is a hint that you're looking at a
 cory[[1]] * 7
 ```
 
+#### 2.3.2.1 Indexing Lists by Name
+
 The same applies to name indexing. With lists, you can get a list containing the indexed object with `[]`:
 
 ```{r}
@@ -466,16 +506,33 @@ You can also use `list$name` to get the object stored with a particular name too
 cory$year
 ```
 
+#### Manipulating Lists with Indexes
+
+Just like vectors, we can change or add elements to our list using indexing. For example, let's save the dog years transformation of the year element as `dog_years`
+
+```{r}
+cory[["dog_years"]] <- cory[["year"]] * 7
+cory
+```
+
+This would also work:
+
+```{r}
+cory$dog_years <- cory$year*7
+cory
+```
+
+
 ### Exercise 2.3.2a.
 
 > Create a list like mine that is made up of `year`, `name`, `enrollment`, `fave_data`, but corresponds to you (professors, or postdocs can use year in position, years since PhD, or make a number up). Make sure you enter two types of favorite data (bc who could choose?!). Make it print your name.
 
 ```{r}
-cory <- list(year = 5L,
+cory <- list(year = 6L,
              name = "Cory Costello",
              enrollment = TRUE, 
              fave_data = c("strings", "numbers")) # note c() to create a vector
-cory$name
+cory
 ```
 
 
@@ -504,7 +561,7 @@ cory$fave_data[2]
 > Using the same list, get your PhD year in dog years (`*7`) and assign it to the 2nd position of the `year` object. Then show the new `year` object.
  
 ```{r}
-cory$year[2] <- cory$year*7
+cory[["year"]][2] <- cory[["year"]]*7
 cory$year
 ```
  
@@ -578,6 +635,8 @@ Note that it has now turned everything into strings.
 Indexing matrices is just like indexing vectors, except we have two dimensions, which we use like so:    
 [row, column]
 
+#### 2.4.2.1 Indexing Matrices Numerically
+
 Let's get the element at row 1 column 1 of the `mat` object:
 
 ```{r}
@@ -590,6 +649,8 @@ Or we could get the whole 2nd column by leaving the row index blank:
 mat[,2]
 ```
 
+#### 2.4.2.1 Indexing Matrices by Name
+
 And, we can use names instead of numbers if we like:
 
 ```{r}
@@ -599,6 +660,11 @@ mat["r1", "c1"]
 A mix:
 ```{r}
 mat["r1", 2]
+```
+#### Changing or Adding to Matrices with indexes
+```{r}
+mat[2, 2] <- mat[2, 2]^2
+mat
 ```
 
 ### Exercise 2.4.2a
@@ -616,10 +682,11 @@ mat2[,1] + mat2[,3]
  
  
 ### Exercise 2.4.2b
-> Multiple the 3rd row by the value in the 2nd row and 2nd column.
+> Change the third row to be equal to the current third row times 3 and print the matrix.
 
 ```{r}
-mat2[3,] * mat2[2, 2]
+mat2[3,] <- mat2[3,]*3
+mat2
 ```
 
 ### 2.4.3 Arrays
@@ -687,6 +754,24 @@ And, like with lists, we can index a column using vector indexing, since a singl
 df_1$c1[1]
 ```
 
+### 2.5.2.1 Modifying a Dataframe with Indexes
+
+Just like lists, vectors, and matrices, you can modify a dataframe and add new elements or change exising elements by referencing indexes.
+
+We could create c4 as the sum of c1 and c2:
+
+```{r}
+df_1$c4 <- df_1$c1 + df_1$c2
+df_1
+```
+
+Or we could replace an element using indexing too. Let's replace c1 with c1^2:
+
+```{r}
+df_1$c1 =df_1$c1^2
+df_1
+```
+
 
 ### 2.5.3 Structure, Types, & Coercion in Dfs
 How can we tell what type of data each column stores? We can use the `str()` function to get the *structure* of the data:
@@ -695,7 +780,15 @@ How can we tell what type of data each column stores? We can use the `str()` fun
 str(df_1)
 ```
 
-### 2.5.2a 
+You can also coerce individual columns into other types. For example, we could turn c1 into an integer (from a numeric/double):
+
+```{r}
+df_1$c1 <- as.integer(df_1$c1)
+df_1
+```
+
+
+### Exercise 2.5.2a 
 > Make a data frame, called df_2, that has 3 columns.
 
 c1 = 1, 2, 3
@@ -705,21 +798,25 @@ c3 = "a", "b", "c"
 > After you create it, check the structure.
 
 ```{r}
-
+df_2 <- data.frame(c1 = c(1, 2, 3),
+                   c2 = c(2, 4, 6),
+                   c3 = c("a", "b", "c"))
+str(df_2)
 ```
 
-### 2.5.2b 
->  Using df_2, add the first and second columns together. what happens? Why?
+### Exercise 2.5.2b 
+>  Using df_2, add a fourth column, c4, which is the first and second columns multiplied together. 
 
 ```{r}
-
+df_2$c4 <- df_2$c1 + df_2$c2
+df_2
 ```
 
-### 2.5.2c 
+### Exercise 2.5.2c 
 > Using df_2, try to add the first and second rows together. what happens? Why?
 
 ```{r}
-
+df_2[1,] + df_2[2, ]
 ```
 
 ## 2.6 Wrapping up Data Types
@@ -1130,7 +1227,7 @@ The `summary()` funciton can be used to get a quick sense of each of the variabl
 summary(ps_data)
 ```
 
-# 5. Indexing and Modifying a data frame in base R.
+# 5. More Advanced Indexing and Modifying a data frame in base R.
 
 ## 5.1 Indexing
 
