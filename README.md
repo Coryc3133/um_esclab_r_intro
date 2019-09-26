@@ -15,7 +15,7 @@ Content adapted from:
 
 [Sara Weston's R Workshops](http://www.saraweston.com/r/)
 
-[Data Science Club's in progress R Guide (Contr. Jonny Saunders, Krista Destasio, include myself)](https://uodatascience.github.io/R_Guide/introduction.html)
+[Data Science Club's in progress R Guide (Contr. Jonny Saunders, Krista Destasio, myself)](https://uodatascience.github.io/R_Guide/introduction.html)
 
 ## Additional Resources:
 
