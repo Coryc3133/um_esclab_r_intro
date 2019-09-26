@@ -1,0 +1,56 @@
+---
+title: "Untitled"
+author: "Cory K. Costello"
+date: "9/25/2019"
+output: html_document
+---
+
+# 1. R Markdown Basics
+# 2. Introduction to ggplot2
+## 2.1 ggplot basics
+### 2.1.1 Grammar of Graphics
+### 2.1.2 Aesthetic mapping
+
+# 3. Cleaning & Reshaping Data with tidyr
+
+A table is tidy if:
+1. each  variable is its own colum, **and**
+2. each row is a single observation or case
+
+## 3.1 Lengthen with gather()
+
+## 3.2 Widen with spread()
+
+## 3.3 unite()
+
+## 3.4 separate()
+
+# 4. Factors with forcats
+
+## 4.1 Inspecting Factors
+### 4.1.1 fct_count()
+### 4.1.2 fct_unique() 
+
+## 4.2 Chaning the Order of Levels
+### 4.2.1 fct_relevel()
+### 4.2.2 fct_rev
+### 4.2.3 fct_reorder 
+
+## 4.3 Combining & Changing Factors
+### 4.3.1 fct_c()
+### 4.3.2 fct_recode()
+### 4.3.2 fct_collapse()
+### 4.3.3 fct_lump()
+
+# 5. Manipulating strings with stringr
+## 5.1 str_detect()
+
+## 5.2 Changing case
+### 5.2.1 str_to_lower()
+### 5.2.2 str_to_upper()
+### 5.2.3 str_to_title()
+
+## 5.3 Changing content
+### 5.3.1 str_replace()
+### 5.3.2 str_pad()
+### 5.3.3 str_trunc()

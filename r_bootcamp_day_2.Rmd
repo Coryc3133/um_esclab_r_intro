@@ -27,8 +27,6 @@ Before we get started with new content, let's do a quick review of what we cover
 > Create a vector, x, and make it the numbers 1 throu 20. Change the 3rd and fourth element so that they are 5 times greater.
 
 ```{r}
-x <- 1:20
-x[3:4] <- x[3:4]*5
 ```
 
 Last time, we ended by installing two packages, the `rio` package and the `tidyverse` package. This time, we're going to learn how to use them to get our data into R, manipulate it, and visualize it. We'll load them both now:
@@ -118,7 +116,7 @@ export(ps_data,
 > I made a mistake when creating this and left the datasets in the `uoregon_r_bootcamp` folder instead of putting them into the `/data` directory. Let's fix that. We already fixed ps_data, but now I want you to fix `another_data_set.csv`. First import the data as `another_df`:
 
 ```{r}
-another_df <- import("another_data_set.csv")
+
 ```
 
 
@@ -126,23 +124,20 @@ another_df <- import("another_data_set.csv")
 > Now I want you to export the data and save it into the `data/` directory. Make sure the name of the dataframe is `another_data_set`, and make sure you save it out as a csv.
 
 ```{r}
-export(another_df,
-       "data/another_data_set.csv")
+
 ```
 
 ### Exercise 1.2c
 > One of my colleagues insists we send them a .sav file so that they can run the analyses in SPSS. Make another copy of `another_data_set` in the `data/` subdirectory that is in the .sav format. 
 
 ```{r}
-another_df <- export(another_df, 
-                     "data/another_data_set.sav")
 ```
 
 ### Exercise 1.2d
 > Finally, let's read one of these datasets to make sure everything worked as expected. Import the .sav version of another_data_set as `another_df`.
 
 ```{r}
-another_df <- import("data/another_data_set.sav")
+
 ```
 
 ## 1.3 Examining Your Data
@@ -277,14 +272,14 @@ ps_data[which(ps_data$item == "faces" | ps_data$item == "houses"),]
 > Get the first 10 rows of the item column from the `ps_data` df.
 
 ```{r}
-ps_data[1:10, "item"]
+
 ```
 
 ### Exercise 2.1b
 > Using logical indexing, get all of the rows where age is greater than or equal to 3.5 and item equals "faces".
 
 ```{r}
-ps_data[which(ps_data$age >= 3.5 & ps_data$item == "faces"),]
+
 ```
 
 
@@ -292,7 +287,6 @@ ps_data[which(ps_data$age >= 3.5 & ps_data$item == "faces"),]
 > Using logical indexing, get all of the columns that start with either s or a (Hint: you only need 1 grep call and | can be used within a string).
 
 ```{r}
-ps_data[,grep( "^s|^a", colnames(ps_data))]
 ```
 
 # 3. Introduction to the `tidyverse`
@@ -430,7 +424,7 @@ Each of these can be very useful in a given scenario.
 > Select all of the variables that contain the letter e in their name.
 
 ```{r}
-select(ps_data, contains("e"))
+
 ```
 
 
@@ -466,14 +460,14 @@ filter(ps_data, between(age, 2.1, 2.5))
 > Get Kids between the ages of 3 and 4 using `filter()` and the `between()` helper function.
 
 ```{r}
-filter(ps_data, between(age, 3, 4))
+
 ```
 
 ### Exercise 3.2b
 > Get Kids between ages of 3 and 4 using `filter()` *without* using the `between()` function.
 
 ```{r}
-filter(ps_data, age >= 3 & age <= 4)
+
 ```
 
 ## 3.3. Pipes
@@ -601,15 +595,7 @@ unique_filtered_data <- ps_data %>% # take the data, then...
 > Take the `ps_data` data set. Using select and filter, get the number correct for kids at least 4 years old (note: there are several ways to do this, but the sum() function may be helpful). The output of your pipe should be a single number.
 
 ```{r}
-ps_data %>% 
-  filter(age >= 4) %>% 
-  select(correct) %>% 
-  sum()
 
-# or
-ps_data %>% 
-  filter(age >= 4 & correct == 1) %>%
-  nrow()
 ```
 
 # 4. Diving deeper into dplyr
@@ -659,20 +645,13 @@ starwars %>%
 > Re-arrange the `starwars` columns such that all of the columns that start with h are at the beginning, followed by the remaining columns.
 
 ```{r}
-starwars %>% 
-  select(starts_with("h"), everything())
+
 ```
 
 ### Exercise 4.2a
 > Select name, species, hair_color, skin_color, and eye_color from the starwars data. Use at least one helper function. 
 
 ```{r}
-starwars %>% 
-  select(name, species, ends_with("color"))
-# or
-
-starwars %>% 
-  select(name, species, contains("color"))
 ```
 
 ## 4.2 More on `filter()`
@@ -789,27 +768,18 @@ starwars %>%
 > Starting with the starwars data frame, filter for characters thats birth year is at least 200. Select just their name, species, and birth_year.
 
 ```{r}
-starwars %>% 
-  filter(birth_year >= 200)
 ```
 
 ### Exercise 4.2b
 > Starting with the starwars data frame, filter for characters that don't have blue in their eye color (hint: it could have more than one color) and print their name, eye_color, and species.
 
 ```{r}
-starwars %>% 
-  filter(!str_detect(eye_color, "blue")) %>% 
-  select(name, eye_color, species)
 ```
 
 ### Exercise 4.2c
 > Starting with the starwars data frame, filter for droids from Tatooine or humans from Naboo. Select just name, homeworld, species, hair, eye, and skin color and make sure the columns in that order.
 
 ```{r}
-starwars %>% 
-  filter(species == "Droid" & homeworld == "Tatooine" |
-           species == "Human" & homeworld == "Naboo") %>% 
-  select(name, homeworld, species, ends_with("color"))
 ```
 
 ## 4.3 Transforming data with mutate() and transmute()
@@ -890,20 +860,12 @@ Note that this basically equivalent to doing a `mutate()` followed by a `select(
 > Create a new variable called bmi that is each character's bmi. bmi = kg / m^2. Mass is already in kg units, but height is currently in cm units, so height will need to be converted (1m = 100cm). 
 
 ```{r}
-starwars %>% 
-  mutate(height_in_m = height / 100,
-         bmi = mass / height_in_m^2)
 ```
 
 ### Exercise 4.3b
 > This time, do the same thing, but use transmute so that the resulting dataframe has just name, height in meters, mass, and bmi (hint: you can always mutate or transmute a variable to be equal to itself)
 
 ```{r}
-starwars %>% 
-  transmute(name = name,
-            mass = mass, 
-            height_in_m = height / 100,
-            bmi = mass / height_in_m^2)
 ```
 
 ## 4.4 Grouping Data with `group_by()`
@@ -949,11 +911,6 @@ starwars %>%
 > Create two new variables called `species_mean_mass` that is equal to the average mass per species, and `species_centered_mass` that is equal to each character's mass minus their species' mean (i.e., center mass within species). Select name, species, and all of the mass variables.
 
 ```{r}
-starwars %>% 
-  group_by(species) %>% 
-  mutate(species_mean_mass = mean(mass, na.rm = TRUE),
-         species_centered_mass = mass - species_mean_mass) %>% 
-  select(name, species, ends_with("mass"))
 ```
 
 ## 4.5 Summarizing data with `summarize()`
@@ -1020,11 +977,6 @@ starwars %>%
 >Returning to the `ps_data`, get the total number correct (call it `num_correct`), the total number of item/condition combinations (call it `num_trials`), and the proportion correct (call it `prop_correct`) for each condition and item using group_by and summarize.
 
 ```{r}
-ps_data %>% 
-  group_by(condition, item) %>% 
-  summarize(num_correct = sum(correct),
-            num_trials = n(),
-            prop_correct = mean(correct))
 ```
 
 
@@ -1159,8 +1111,4 @@ starwars %>%
 > Take the `ps_data`, make sure that it has only distinct kids (based on subid), but keep all of the variables. Put the dataset in order from most frequent to least frequent age.
 
 ```{r}
-ps_data %>% 
-  distinct(subid, .keep_all = TRUE) %>% 
-  count(age) %>% 
-  arrange(desc(n))
 ```
