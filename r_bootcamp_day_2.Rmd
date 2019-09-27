@@ -16,7 +16,7 @@ By the end of the day, you will:
 + Learn how to read in and examining Data
 + Begin understanding tidyverse "grammar"
 + Begin understanding the grammar of data manipulation, `dplyr` 
-+ What a pipe is and how to use pipes to chain together `tidyverse` verbs
++ Begin understanding what a pipe is and how to use pipes to chain together `tidyverse` verbs
 
 
 # 0. Quick Refresher & Warm up 
@@ -24,7 +24,7 @@ By the end of the day, you will:
 Before we get started with new content, let's do a quick review of what we covered last time. 
 
 ## Exercise 0.1a
-> Create a vector, x, and make it the numbers 1 throu 20. Change the 3rd and fourth element so that they are 5 times greater.
+> Create a vector, x, and make it the numbers 1 through 20. Change the 3rd and fourth element so that they are 5 times greater.
 
 ```{r}
 ```

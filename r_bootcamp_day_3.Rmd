@@ -10,79 +10,76 @@ output:
 
 # Goals 
 
-By the end of this tutorial, you will know:
+By the end of this tutorial, you will:
 
-+ (review & continue) using tidyverse `verbs`
-+ basics of graphing in ggplot2
-+ basics of writing in RMarkdown (content in a separate document)
++ have a better understanding of tidyverse `verbs`
++ understand the basics of graphing in ggplot2
++ understand the basics of writing in RMarkdown (content in a separate document)
 
-The best way to do this tutorial is to walk through it slowly, executing each line and trying to understand what it does. You can execute a single line by placing your cursor somewhere in that line and hitting CMD+enter (again on a mac) and execute a whole chunk at a time by hitting CMD+option+C (on a mac). 
+The best way to do this tutorial is to walk through it slowly, executing each line and trying to understand what it does. You can execute a single line by placing your cursor somewhere in that line and hitting CMD+enter on mac or CTRL+enter on PC. 
 
 First, set your working directory!
 
-# `tidyverse` review:
+# 1 `tidyverse` review
   
-If you haven't installed the package, you'll need to run this command once:
+If you haven't installed the tidyverse package, you'll need to run this command once:
 
 `install.packages("tidyverse")`
 
-```{r}
-# Load the package (tell R that you want to use its functions)
-library("tidyverse")
-```
-
-We're going to reread the data now, using `read_csv`, which is the `tidyverse` version and works faster and better in a number of ways!
+Next, as always, we need to load the package with `library()`:
 
 ```{r}
-ps_data <- read_csv("pragmatic_scales_data.csv")
+# Load the packages (tell R that you want to use its functions)
+library(tidyverse)
+library(rio)
 ```
-# 1. Pipes
+
+We're going to reread the data now, using `import`, which is from the `rio` library; it's not from `tidyverse()` per se, but its designed similarly and is easy to use.
+
+```{r}
+ps_data <- import("pragmatic_scales_data.csv")
+```
+
+## 1.1. Pipes
 
 Pipes are a way to write strings of functions more easily. They bring the first argument of the function to the beginning. So you can write:
 
 ```{r}
-mean(ps_data$age)
+sum(select(ps_data, age))
 
 # becomes...
 
-ps_data$age %>% mean()
+ps_data %>% 
+  select(age) %>% 
+  sum()
 ```
 
-That's not very useful yet, but when you start **nesting** functions, it gets better. 
+That's not very useful yet, but it really pays off with more and more steps. For example, let's say we want the average age of kids per condition, but first need to remove the repeated entries of the same kids:
 
 ```{r}
-mean(unique(ps_data$age))
+# This mess:
+summarize(group_by(distinct(ps_data, sub_id, .keep_all = TRUE), condition), mean_age = mean(age, na.rm = TRUE))
 
-ps_data$age %>% unique() %>% mean()
+# Becomes this:
+ps_data %>% # take the ps_data, then...
+  distinct(subid, .keep_all = TRUE) %>% # keep distinct subjects, then... 
+  group_by(condition) %>% # group by condition, then...
+  summarize(mean_age = mean(age, na.rm = TRUE)) # return the mean age (per group)
 
-ps_data$age %>% unique %>% mean
 ```
 
-or 
+## 1.2. Filtering 
 
-```{r}
-round(mean(unique(ps_data$age)), 
-      digits = 2)
+The verb `filter` can be used to extract *rows* from your dataset. You might do this to remove outliers, select a subpopulation, etc. `filter` is a verb (function) that takes a data frame as its first argument, followed by the **condition(s)** you want to filter on. 
 
-ps_data$age %>% unique %>% mean %>% round(digits = 2)
-
-# indenting makes things even easier to read
-ps_data$age %>%
-  unique %>% 
-  mean %>% 
-  round(digits = 2) 
-```
-## 2. Filtering 
-
-The verb `filter` can be used to remove *rows* from your dataset. You might do this to remove outliers or select a subpopulation. `filter` is a verb (function) that takes a data frame as its first argument, and then as its second takes the **condition** you want to filter on. 
-
-So if you wanted to look only at 2 and 3 year olds.
+So if you wanted to look only at kids between 2 and 3 year olds.
 
 ```{r}
 ps_data %>%
-  filter(age > 2, age < 3)
+  filter(age >= 2 & age =< 3)
 ```
-## 2. Selecting
+
+## 1.3. Selecting
 There are also times when you want to add or remove *columns*. You might want to remove columns to simplify the dataset. If you wanted to do that, the verb is `select`. 
 
 ```{r}
@@ -90,15 +87,16 @@ There are also times when you want to add or remove *columns*. You might want to
 ps_data %>%
   select(subid, age, correct) 
 ```
-## 3. Mutating
-Perhaps more useful is *adding columns*. You might do this perhaps to compute some kind of derived variable. `mutate` is the verb for these situations - it allows you to add a column. Let's add a discrete age group factor to our dataset. 
+
+## 1.4. Mutating
+Perhaps more useful is *adding columns*. You might do this perhaps to compute some kind of derived variable. `mutate` is the verb for these situations - it allows you to add a column. Let's mean-center age in the `ps_data` dataset. 
 ```{r}
 ps_data <- ps_data %>%
-  mutate(age_group = cut(age, 2:5, include.lowest = TRUE))
+  mutate(age_c = age - mean(age, na.rm = TRUE))
 
 head(ps_data)
 ```
-## 4. Arranging
+## 1.5. Arranging
 Sometimes you might want to **sort** your data by the values in a particular column. For this, you'll use the verb `arrange`. Let's arrange our data by the `correct` column.
 
 ```{r}
@@ -108,11 +106,11 @@ ps_data %>%
 ps_data %>% 
   arrange(desc(age))
 ```
-## 5. Grouping and Summarising
+## 1.6. Grouping and Summarising
 
-We typically describe datasets at the level of subjects, not trials. We need two verbs to get a summary at the level of subjects: `group_by` and `summarise` (kiwi spelling). 
+Sometimes we want to describe a dataset at different levels. For instance, we can describe condition-level data in `ps_data` by combining two verbs: `group_by` and `summarize` . 
 ```{r}
-#summarize without grouping
+# summarize without grouping
 ps_data %>%
   summarise(correct_mean = mean(correct),
             correct_sd = sd(correct),
@@ -120,32 +118,40 @@ ps_data %>%
 
 #grouped by age_group and condition
 ps_data %>%
-  group_by(age_group, condition) %>%
+  group_by(condition) %>%
   summarise(correct_mean = mean(correct),
             correct_sd = sd(correct),
             n_observations = length(subid))
 ```
 
-> **Exercise 5a.** One of the most important analytic workflows for psychological data is to take some function (e.g., the mean) *for each participant* and then look at grand means and variability *across participant means*. This analytic workflow requires grouping, summarising, and then grouping again and summarising again! First, create a table called `ps_sub_means` to get the mean `correct` for each `subid`. Hint: in addition to `subid`, group by `age_group` and `condition` in this summary to transfer those values to `ps_sub_means` (we'll use them in our next step). Next, create a table called `ps_means` where you use `ps_sub_means` as your data file and calculate the mean `correct` across `age_group` and `condition`.  
+## Exercise 1a. 
+>One of the most important analytic workflows for psychological data is to take some function (e.g., the mean) *for each participant* and then look at grand means and variability *across participant means*. This analytic workflow requires grouping, summarizing, and then grouping again and summarising again! First, create a table called `ps_sub_means` to get the mean `correct` for each `subid`. Hint: in addition to `subid`, group by `condition` in this summary to transfer those values to `ps_sub_means` (we'll use them in our next step). 
 
 ```{r}
 ps_sub_means <- ps_data %>%
-  group_by(age_group, condition, subid) %>%
+  group_by(condition, subid) %>%
   summarise(correct_mean = mean(correct), 
             n_observations = length(subid))
 
-ps_means <- ps_sub_means %>%
-  group_by(age_group, condition) %>%
-  summarise(correct_sd = sd(correct_mean),
-            correct_cond_mean = mean(correct_mean),
-            n_subs = length(subid))
+ps_sub_means
 ```
-## NEW CONTENT:
 
-## Data tidying
+## Exercise 1b
+>Next, create a table called `ps_means` where you use `ps_sub_means` as your data file and calculate the mean `correct` across `condition`.  
+
+```{r}
+ps_means <- ps_sub_means %>%
+  group_by(condition) %>%
+  summarise(correct_sd = sd(correct_mean),
+            correct_mean = mean(correct_mean),
+            n_subs = length(subid))
+ps_means
+```
+
+# 2. Data tidying with `tidyr`
 Credit: http://r4ds.had.co.nz/tidy-data.html#tidy-data-1
 
-The two key verbs in **data tidying** are `spread` and `gather`. Each of these verbs relies on a key value pair that contains a *key* that indicates *what* the information describes and a *value* that contains the actual information.
+The two key verbs in **data tidying** are `spread` and `gather`. Each of these verbs relies on a key-value pair that contains a *key* that indicates *what* the information describes and a *value* that contains the actual information.
 
 "Password: 0123456789"" is a key value pair. 0123456789 is the *value*, and it is associated with the *key* Password.
 
@@ -155,11 +161,13 @@ Recall the "rules" for tidy data:
 + Each variable must have its own column.
 + Each observation must have it's own row.
 + Each value must have its own cell.
+
 ```{r}
 ?table1 #let's learn about the datset
 table1 #this dataset is tidy!
 ```
-## 6. Gathering & Joining Data
+## 2.1. Gathering & Joining Data
+
 A common problem is a dataset where some column names are not names of variables, but *values* of a variable. Check out `table4a`. The column names `1999` and `2000` are not variables in our data, instead they represent values of the `year` variable, and each row represents two observations, not one. We need to *gather* these columns into a new pair of variables.
 
 *gather* makes wide tables narrower and longer

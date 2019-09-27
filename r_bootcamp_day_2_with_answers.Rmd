@@ -28,6 +28,7 @@ Before we get started with new content, let's do a quick review of what we cover
 
 ```{r}
 x <- 1:20
+
 x[3:4] <- x[3:4]*5
 ```
 
@@ -516,7 +517,7 @@ It's typically considered good practice to not have more than one pipe per line.
 
 Bad:
 ```{r }
-ps_data %>% select(age) %>% sum() 
+ps_data %>% select(age) %>% sum()
 ```
 
 Good:
