@@ -24,7 +24,7 @@ library(rio)
 library(tidyverse)
 ```
 
-# 1. Data tidying with `tidyr`
+# 1. Data tidying with `tidyr` (Optional Content)
 Much of this draws on the [tidy data chapter from 'R for Data Science'](http://r4ds.had.co.nz/tidy-data.html#tidy-data-1)
 
 The two key verbs in **data tidying** are `spread` and `gather`. Each of these verbs relies on a key-value pair that contains a *key* that indicates *what* the information describes and a *value* that contains the actual information.
@@ -244,7 +244,7 @@ Or make them a different color:
 ```{r}
 ggplot(data = iris) + # attach data
     geom_histogram(mapping = aes(x = Sepal.Length), 
-                   fill = "red") # fill, bc hist bars are 2-d
+                   color = "red") # fill, bc hist bars are 2-d
 ```
 
 Let's look at something just a tiny but more complicated: we'll add a layer of points to our plot (creating a scatterplot) using geom_point(). geom_point() is another *geom function*, each of which adds a different type of layer to a plot. Let's see what happens if we just give it an x variable to map:
@@ -718,7 +718,8 @@ ggplot(diamonds, aes(x = carat, y = price, color = cut)) +
   theme_minimal() + 
   scale_x_log10() + 
   scale_y_log10() +
-  scale_color_brewer(palette="Dark2")
+  scale_color_brewer(palette="Dark2") +
+  annotation_logticks()
 ```
 
 # Final Exercise!

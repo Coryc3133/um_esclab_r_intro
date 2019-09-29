@@ -7,6 +7,8 @@ output:
     toc: true
     toc_float: true
     df_print: paged
+editor_options: 
+  chunk_output_type: inline
 ---
 
 # Goals 
@@ -195,7 +197,7 @@ The `summary()` funciton can be used to get a quick sense of each of the variabl
 summary(ps_data)
 ```
 
-# 2. More Advanced Indexing and Modifying a data frame in base R.
+# 2. More Advanced Indexing and Modifying a data frame in base R.  (*optional Content*)
 
 ## 2.1 Indexing
 
@@ -909,7 +911,7 @@ starwars %>%
 
 ## 4.4 Grouping Data with `group_by()`
 
-`group_by()` is another `dplyr` function that creates groups based on one or more variables in the data. This affects all kinds of things that you then do with the data, such as mutating. It is pretty simple to use. It requires data as its first argument, and the you name the variables (unquoted) to group by separated by a column.
+`group_by()` is another `dplyr` function that creates groups based on one or more variables in the data. This affects all kinds of things that you then do with the data, such as mutating. It is pretty simple to use. It requires data as its first argument, and the you name the variables (unquoted) to group by separated by a comma.
 
 For example, we could group our `starwars` data by characters' homeworld:
 

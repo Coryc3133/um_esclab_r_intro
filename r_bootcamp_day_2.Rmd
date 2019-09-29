@@ -189,7 +189,7 @@ The `summary()` funciton can be used to get a quick sense of each of the variabl
 summary(ps_data)
 ```
 
-# 2. More Advanced Indexing and Modifying a data frame in base R.
+# 2. More Advanced Indexing and Modifying a data frame in base R. (*optional Content*)
 
 ## 2.1 Indexing
 
@@ -803,7 +803,7 @@ starwars <- starwars %>%
 In the `tidyverse`, we use `mutate()` instead. `mutate()` requires data as its first argument, followed by a set of expressions defining new columns, separated by a comma. For example, we could calculate height in meters and millimeters:
 
 ```{r}
-starwars %>% 
+starwars <- starwars %>% 
   mutate(height_in_mm = height*10, # height in millimeters
          height_in_m = height/100) # height in meters
 ```
@@ -851,7 +851,7 @@ starwars %>%
 ```{r}
 starwars %>% 
   transmute(height_z = scale(height),
-         mass_z = scale(mass))
+            mass_z = scale(mass))
 ```
 
 Note that this basically equivalent to doing a `mutate()` followed by a `select()` for the newly mutated columns.
