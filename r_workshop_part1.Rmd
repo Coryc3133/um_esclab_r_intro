@@ -1,22 +1,21 @@
 ---
-title: "R Bootcamp Day 1: Introduction to R"
-author: "Cory Costello"
-date: "9/23/2019"
+title: "R Workshop Part 1"
+author: "Cory K. Costello"
+date: "3/30/2021"
 output: 
   html_document:
     toc: true
     toc_float: true
     df_print: paged
 ---
-
 # Goals 
 
 By the end of this tutorial, you will know:
 
 + Basic `R` usage (using `R` as a calculator, creating variables, indexing)
-+ Basic types of data in R
-+ How to get values out of the rows and columns in your data
-+ Basic iteration (for loops and functions)
++ Begin understanding tidyverse "grammar"
++ Begin understanding the grammar of data manipulation, `dplyr` 
++ What a pipe is and how to use pipes to chain together `tidyverse` verbs
 
 The best way to do this tutorial is to walk through it slowly, executing each line and trying to understand what it does. You can execute a single line by placing your cursor somewhere in that line and hitting CTRL+enter on a PC or CMD+enter on a mac; you can execute a whole chunk at a time by hitting CTRL+shift+enter on a PC. 
 
@@ -128,10 +127,7 @@ And_someTimes.People_doSTRANGEtHiNgS <- 8 # PLEASE NEVER DO ANYTHING LIKE THIS!
 > Create a variable called var_1 that is equal to 4. Then create a variable called var_2 that is var_1 raised to the power of 6. Print the results.
 
 ```{r}
-var_1 <- 4
-var_2 <- var_1^6
-var_1
-var_2
+
 ```
 
 # 2. Types of Data
@@ -259,9 +255,7 @@ as.numeric(mixed_vec)
 > Create an object called x that is assigned the number 8. Create an object called y that is a sequence of numbers from 2 to 16, by 2. Add x and y. What happens? 
 
 ```{r}
-x <- 8
-y <- seq(from = 2, to = 16, by = 2)
-x + y
+
 ```
 
 ### Exercise 2.2.1b 
@@ -269,48 +263,39 @@ x + y
 > Create an object called z that is a vector containing the numbers 5 and 10. Create an object called q that is a sequence of numbers from 5 to 25, by 5. Multiply q and z. What happens? 
 
 ```{r}
-z <- c(5, 10)
-q <- seq(from = 5, to = 25, by = 5)
-q*z
+
 ```
 
 ### Exercise 2.2.1c
 > Create an object called a that is just the letter "a". Add a to x (from above). What happens? 
 
 ```{r eval = FALSE}
-a <- "a"
-a + x
+
 ```
 
 ### Exercise 2.2.1d 
 > Create a vector called b that is just the number 8 in quotes. Add b to x (from above). What happens? 
 
 ```{r}
-b <- "8"
+
 ```
 
 ```{r eval = FALSE}
-b+x
+
 ```
 
 ### Exercise 2.2.1e 
 > Find the type of each of the objects we just made (x, y, q, z, b)? 
 
 ```{r}
-typeof(x)
-typeof(y)
-typeof(q)
-typeof(z)
-typeof(b)
+
 ```
 
 ### Exercise 2.2.1f 
 > Find some way to add b to x (hint: you may need to be coercive)? 
 
 ```{r}
-as.numeric(b) + x
-b <- as.numeric(b)
-b + x
+
 ```
 
 ### 2.2.2 Indexing vectors
@@ -406,322 +391,23 @@ z
 > Create a vector called `named` that includes the numbers 1 to 5. Name each value a, b, c, d, and e (in order). Print the first element using numerical indexing and the last element using name indexes. 
 
 ```{r}
-named <- c("a" = 1,
-           "b" = 2,
-           "c" = 3,
-           "d" = 4,
-           "e" = 5)
-named[1]
-named["e"]
+
 ```
 
 ## Exercise 2.2.2b.
 > Change the  third element of `named` to the value 21 and then show your results.
 
 ```{r}
-named[3] <- named[3]*7
+
 ```
 
-## 2.3 Lists
+## 2.3. Data Frames
 
-Vectors are great for storing a single type of data, but what if we have a variety of different kinds of data we want to store together. For example, let's say I want to store the year I am in the PhD program (a number), my name ( a string), and my enrollment status (a logical) in a single object that preserved these different types? A vector won't work, but a `list` will.
+The `data.frame` object is like a vector, but it's 2-dimensional and can contain heterogeneous data types. 
 
-Lists are like vectors in that they are a 1-dimensional object, but they can contain heterogeneous data. 
+### 2.3.1 Creating Data Frames 
 
-### 2.3.1 Creating Lists
-
-We can create a list with the `list()` function:
-
-```{r}
-cory <- list(6L,
-             "Cory Costello",
-             TRUE)
-
-cory
-```
-
-And, we can give each of these entries names to make things a little easier to keep track of:
-
-```{r}
-cory <- list(year = 6L,
-             name = "Cory Costello",
-             enrollment = TRUE)
-
-cory
-```
-
-Notice that the `[[1]]`, `[[2]]`, and `[[3]]`, the element indices, have been replaced by the names `year`, `name`, and `enrollment`. You can see also see the names of a list by running `names()` on it:
-
-```{r}
-names(cory)
-```
-
-Lists are even more flexible than you've seen so far. In addition to being of heterogeneous type, each element of a list can be of different dimensions. Let's add another element to the list about me that contains my favorite types of data, which will be a vector of length 2:
-
-```{r}
-cory <- list(year = 6L,
-             name = "Cory Costello",
-             enrollment = TRUE, 
-             fave_data = c("strings", "numbers")) # note c() to create a vector
-cory
-```
-
-### 2.3.2 Indexing Lists
-
-Like vectors, lists can be indexed by their name or their position (numerically). 
-
-#### 2.3.2.1 Indexing Lists Numerically
-
-For example, if we wanted the year variable, we could get it out using its position as the first element of my list:
-
-```{r}
-cory[1]
-```
-
-Now let's say we want to know my PhD year in dog years. Let's see if we can get that by multiplying the `year` element by 7:
-
-```{r eval = FALSE}
-cory[1] * 7
-```
-
-Okay, we get a pretty confusing error that we supplied a non-numeric argument, which in this case is `cory[1]`. This happened because single bracket indexing on a list produces a list and lists can't be multiplied by a number (at least not with just `*`). If we want the actual object stored at the first position instead of a list with that object, we have to use the double-bracket indexing `list[[i]]`:
-
-```{r}
-cory[[1]]
-```
-
-Notice it no longer has the `$year`; `$label` is a hint that you're looking at a list and not the object stored at that position. Now let's see my PhD year in dog years:
-
-```{r}
-cory[[1]] * 7
-```
-
-#### 2.3.2.1 Indexing Lists by Name
-
-The same applies to name indexing. With lists, you can get a list containing the indexed object with `[]`:
-
-```{r}
-cory["year"]
-```
-
-And double brackets `[[]]` can be used to get the object stored with that name:
-
-```{r}
-cory[["year"]]
-```
-
-You can also use `list$name` to get the object stored with a particular name too:
-```{r}
-cory$year
-```
-
-#### Manipulating Lists with Indexes
-
-Just like vectors, we can change or add elements to our list using indexing. For example, let's save the dog years transformation of the year element as `dog_years`
-
-```{r}
-cory[["dog_years"]] <- cory[["year"]] * 7
-cory
-```
-
-This would also work:
-
-```{r}
-cory$dog_years <- cory$year*7
-cory
-```
-
-### Exercise 2.3.2a.
-
-> Create a list like mine that is made up of `year`, `name`, `enrollment`, `fave_data`, but corresponds to you (professors, or postdocs can use year in position, years since PhD, or make a number up). Make sure you enter two types of favorite data (bc who could choose?!). Make it print your name.
-
-```{r}
-cory <- list(year = 6L,
-             name = "Cory Costello",
-             enrollment = TRUE, 
-             fave_data = c("strings", "numbers")) # note c() to create a vector
-cory
-```
-
-
-### 2.3.3 Indexing Objects within Lists
-
-As we saw with the object `fave_data` stored in the list `cory`, objects within lists can have different dimensions and length. What if we wanted just one element of an object in a list, such as just the second element of `fave_data`? We can use indexing on the `fave_data` vector stored within the `cory` list by chaining indexes.
-
-We could do that with numbers:
-
-```{r}
-cory[[4]][2]
-```
-
-Or with type of list name indexing:
-
-```{r}
-cory[["fave_data"]][2]
-```
-
-```{r}
-cory$fave_data[2]
-```
-
-### Exercise 2.3.3a 
-
-> Using the same list, get your PhD year in dog years (`*7`) and assign it to the 2nd position of the `year` object. Then show the new `year` object.
- 
-```{r}
-cory[["year"]][2] <- cory[["year"]]*7
-cory$year[2] <- cory$year*7
-cory$year
-```
- 
-## 2.4. Matrices & Arrays
-
-Matrices are 2-dimensional objects that store a single type of data, so you can think of them like a 2-dimensional vector.
-
-### 2.4.1 Creating Matrices
-We can create matrices using the `matrix()` function. For example, let's create a 2 X 2 matrix of the numbers 1 to 4.
-
-```{r}
-mat <- matrix(data = c(1, 2, # data in either row-wise or column-wise order
-                       3, 4), # don't have to do two lines, but it looks nice
-              nrow = 2, # number of rows
-              ncol = 2, # number of columns
-              byrow = TRUE) # tell it the order of data above
-mat
-```
-
-Or, let's say we had two columns, c1 and c2. We could put them together into a matrix using `cbind()` or column-bind:
-
-```{r}
-c1 <- c(1, 3)
-c2 <- c(2, 4)
-mat <- cbind(c1, c2)
-mat
-```
-
-This accomplishes basically the same thing, except our two columns have names. 
-
-We could do something similar with two rows, called r1 and r2, using the `rbind()` or row-bind function:
-
-```{r}
-r1 <- c(1, 2)
-r2 <- c(3, 4)
-mat <- rbind(r1, r2)
-mat
-```
-
-This is essentially the same, but it has row names. We can see that by running `rownames()` on it:
-
-```{r}
-rownames(mat)
-```
-
-You'll notice it doesn't have column names, which we can check with `colnames()`:
-
-```{r}
-colnames(mat)
-```
-
-But, we could assign column names using the `colnames()` function:
-
-```{r}
-colnames(mat) <- c("c1",  "c2")
-mat
-```
-
-Finally, matrices behave a lot like vectors; they can only accomodate homogenous data, and so it will coerce the data into whatever type is most accomodating:
-
-```{r}
-mixed_mat <- cbind(mat, 
-                   c3 = c("a", "b"))
-mixed_mat
-```
-
-Note that it has now turned everything into strings.
-
-### 2.4.2 Indexing Matrices
-
-Indexing matrices is just like indexing vectors, except we have two dimensions, which we use like so:    
-[row, column]
-
-#### 2.4.2.1 Indexing Matrices Numerically
-
-Let's get the element at row 1 column 1 of the `mat` object:
-
-```{r}
-mat[1, 1]
-```
-
-Or we could get the whole 2nd column by leaving the row index blank:
-
-```{r}
-mat[,2]
-```
-
-#### 2.4.2.1 Indexing Matrices by Name
-
-And, we can use names instead of numbers if we like:
-
-```{r}
-mat["r1", "c1"]
-```
-
-A mix:
-```{r}
-mat["r1", 2]
-```
-#### Changing or Adding to Matrices with indexes
-```{r}
-mat[2, 2] <- mat[2, 2]^2
-mat
-```
-
-### Exercise 2.4.2a
-> Make a matrix called mat2 that is a 3 X 3 matrix with rows 1, 2, 3,  4, 5, 6,  7, 8, 9. Make the column names c1, c2, and c3, and make the row names r1, r2, and r3. Add the first column to the third column.
-
-```{r}
-mat2 <- matrix(c(1, 2, 3, 
-                 4, 5, 6, 
-                 7, 8, 9),
-               nrow = 3, 
-               byrow = TRUE)
-
-mat2[,1] + mat2[,3]
-```
- 
- 
-### Exercise 2.4.2b
-> Change the third row to be equal to the current third row times 3 and print the matrix.
-
-```{r}
-mat2[3,] <- mat2[3,]*3
-mat2
-```
-
-### 2.4.3 Arrays
-
-Arrays are like matrices, but can have N-dimensions (more than 2).
-
-```{r}
-array(c(mat, mat*2, mat*3), dim =c(2, 2, 3))
-```
-
-Most of us don't have to use arrays that often, so we'll leave it at that.
-
-## 2.5. Data Frames
-
-The `data.frame` object is like a matrix in that it has 2 dimensions, but it can contain heterogeneous data like a list. The indexing works like a sort of hybrid of the two as you'll soon see.
-
-### 2.5.1 Creating Data Frames 
-
-Let's start by making a simple dataframe out of the `mixed_mat` we created above:
-
-```{r}
-df_1 <- data.frame(mixed_mat)
-df_1
-```
-
-Note that we can also create a dataframe very similarly to how we made a list, but replacing `list()` with `data.frame()`:
+Note that we can create a dataframe from scratch with the `data.frame()` function:
 
 ```{r}
 df_1 <- data.frame(c1 = c(1, 3),
@@ -731,9 +417,9 @@ df_1 <- data.frame(c1 = c(1, 3),
 df_1
 ```
 
-### 2.5.2 Indexing Data Frames
+### 2.3.2 Indexing Data Frames
 
-Indexing dataframes is sort of a hybrid between matrices and lists. Like matrices, you can index using the [row, column] format, using either numerical indexing:
+Like vectors, dataframes can be indexed by using numerical or named indices. However, dataframes require two indices in the [row, column] format. For example, we can use numerical indexing:
 
 ```{r}
 df_1[1, 3]
@@ -751,19 +437,19 @@ You can also get an entire row or column by leaving an index blank. Let's get al
 df_1[, "c2"]
 ```
 
-However, like a list, we can use the `$` in the form `data$column` (similar to `list$object` used for lists). Let's get the first column:
+We can use the `$` in the form `data$column` (similar to `list$object` used for lists). Let's get the first column:
 
 ```{r}
 df_1$c1
 ```
 
-And, like with lists, we can index a column using vector indexing, since a single column is (by definition) a vector (1-dimensional, with a single type of data). Let's get the first value in column 1:
+And, we can index a column using vector indexing, since a single column is (by definition) a vector (1-dimensional, with a single type of data). Let's get the first value in column 1:
 
 ```{r}
 df_1$c1[1]
 ```
 
-### 2.5.2.1 Modifying a Dataframe with Indexes
+### 2.3.2.1 Modifying a Dataframe with Indexes
 
 Just like lists, vectors, and matrices, you can modify a dataframe and add new elements or change exising elements by referencing indexes.
 
@@ -782,7 +468,7 @@ df_1
 ```
 
 
-### 2.5.3 Structure, Types, & Coercion in Dfs
+### 2.3.3 Structure, Types, & Coercion in Dfs
 How can we tell what type of data each column stores? We can use the `str()` function to get the *structure* of the data:
 
 ```{r}
@@ -797,7 +483,7 @@ df_1
 ```
 
 
-### Exercise 2.5.2a 
+### Exercise 2.3.2a 
 > Make a data frame, called df_2, that has 3 columns.
 
 c1 = 1, 2, 3
@@ -807,38 +493,22 @@ c3 = "a", "b", "c"
 > After you create it, check the structure.
 
 ```{r}
-df_2 <- data.frame(c1 = c(1, 2, 3),
-                   c2 = c(2, 4, 6),
-                   c3 = c("a", "b", "c"))
-str(df_2)
+
 ```
 
-### Exercise 2.5.2b 
+### Exercise 2.3.2b 
 >  Using df_2, add a fourth column, c4, which is the first and second columns multiplied together. 
 
 ```{r}
-df_2$c4 <- df_2$c1 * df_2$c2
-df_2
+
 ```
 
-### Exercise 2.5.2c 
+### Exercise 2.3.2c 
 > Using df_2, try to add the first and second rows together. what happens? Why?
 
 ```{r}
-df_2[1,] + df_2[2, ]
+
 ```
-
-## 2.6 Wrapping up Data Types
-
-Now you know the basics of how R represents data.
-
-This table from [Advanced R](http://adv-r.had.co.nz/Data-structures.html#data-structures) summarizes them:
-
-| | Homogenous data | Heterogenous data |
-|------------|----------------| ------------------|
-| 1-Dimensional | Atomic Vector | List |
-| 2-Dimensional | Matrix | Data frame |
-| N-Dimensional | Array | |
 
 # 3. Functions & Iteration
 
@@ -865,7 +535,7 @@ We get an error telling us that the argument "x" is missing and has no default. 
 Let's see what happens when we run `mean()` on the matrix `mat` we created eariler:
 
 ```{r}
-mean(mat)
+mean(df_1$c1)
 ```
 
 Note that `mean()` has two more optional arguments listed: `trim`, which returns a trimmed mean, and `na.rm` which takes a logical value indicating if it should remove missing values or not before it calculates the mean (set to `FALSE` by default). What happens if we don't remove NAs before calculating the mean? Let's check it out.
@@ -898,8 +568,6 @@ length(vec_w_na)
 ```{r}
 nrow(df_1)
 ncol(df_1)
-nrow(mat)
-ncol(mat)
 ```
 
 ## 3.2. Arguments are Positional
@@ -937,86 +605,11 @@ mean(vec_w_na, na.rm = TRUE) # or...
 mean(vec_w_na, 0, TRUE)
 ```
 
-
-## 3.3. User-defined functions
-
-You can also make your own functions. In fact, that is where most of the R functions we use come from, someone making their own function and then sharing it with everyone. For example, let's make a function that calculates the mean of a vector, and prints it in the format: "The mean is _", where the blank is filled in with the mean.
-
-To create a function, you use the `function()` function. Like anything you make in R, you need to save it to a name with `<-`.
-
-Within the parantheses, you put the arguments. Then you define the *body* of the function in `{}`:
-
-```{r}
-pretty_mean <- function(data){
-  mean <- mean(data, na.rm = TRUE)
-  x <- paste("The Mean is", mean)
-  print(x) 
-}
-```
-
-Now let's test it out on our `vec_w_na` object:
-
-```{r}
-pretty_mean(vec_w_na)
-```
-
-Notice that it works how we expected it to, and also it didn't create an object in our global environment called `mean`. That variables within a function are local; they only exist within that function (they don't get created in the global environment). 
-
-```{r}
-pretty_mean <- function(data, excited = TRUE){
-    mean <- mean(data, na.rm = TRUE)
-    if(excited == FALSE){x <- paste("The Mean is", mean)}
-    if(excited == TRUE){x <- paste("The Mean is", mean, "!")}
-    print(x)
-}
-
-pretty_mean(vec_w_na)
-pretty_mean(vec_w_na, excited = FALSE) # tone it down
-```
-
-Obviously, we can make much more complicated functions, but we will leave it there for now.
-
-### Exercise 3.3a 
->  Create a function called `pretty_sd`, that has a single argument called data and prints out "The SD is _" with the blank filled in with the SD of the data. Run it on the `vec_w_na` object.
-
-```{r}
-pretty_mean <- function(data){
-  mean <- sd(data, na.rm = TRUE)
-  paste("The SD is", mean)
-}
-
-pretty_mean(vec_w_na)
-```
-
-## 3.4 For loops
-
-R, like many programming languages, can loop through objects. The most common type of loop is called a *for loop*, and it iterates through an object performing a specified operation. For example, let's say we wanted to go through our `vec_w_na` and print each element and its index. We could do that with a for loop.
-
-For loops work a little bit like a function. Within the parantheses, you specify what is being iterated through, and you specify the body of the loop in `{}`:
-
-```{r}
-for(i in 1:length(vec_w_na)){
-  print(paste("The value at index", i, "is", vec_w_na[i]))
-}
-```
-
-Note that with a for loop, we have to tell it to print the result; otherwise, it runs the commands within the scope of the loop and doesn't display the results. 
-
-
-### Exercise 3.4a. 
-> Create a for loop that iterates through our `vec_w_na` vector, and prints out the result of dividing each value by 5 (hint: remember to print!).
-
-```{r}
-for(i in 1:length(vec_w_na)){
-  print(vec_w_na[i]/5)
-}
-```
-
-## 3.5. Packages
+## 3.3. Packages
 
 So far, we've been working with functions that are already installed and loaded when we open R. However, many of the functions we want to use are not part of the basic R install. They come in `packages` that other R users make and share.
 
-### 3.5.1 Installing Packages
+### 3.3.1 Installing Packages
 
 The most common way to get a package is to download it from [CRAN](https://cran.r-project.org/) using the code `install.packages()` function. Packages on CRAN have to pass certain tests, so any package on CRAN should be safe and basically work (there can be bugs).
 
@@ -1026,15 +619,15 @@ One package we're going to use is the package `rio`, which has really easy funct
 install.packages("rio")
 ```
 
-### 3.5.2 Updating Packages
+### 3.3.2 Updating Packages
 
-You occassionally need to update packages, which you can do with `update.packages()`:
+You occasionally need to update packages, which you can do with `update.packages()`:
 
 ```{r eval = FALSE}
 update.packages("rio")
 ```
 
-### 3.5.3 Opening Packages
+### 3.3.3 Opening Packages
 
 Installing a package puts a copy of it into our personal library that R has access to. If we want to use it, we have to open the package in our working session. We do this with the `library()` function:
 
@@ -1063,7 +656,7 @@ And let's load it:
 library(tidyverse)
 ```
 
-### 3.5.4 Conflicts
+### 3.3.4 Conflicts
 
 You'll notice that when we load the tidyverse, it tells us the 8 different packages it loads. It also tells us that we have conflicts with other packages.
 
@@ -1085,4 +678,5 @@ The last thing I want to mention about packages is that you can tell R explicitl
 ```
 
 This can be useful if you have conflicting packages and want to make sure you're calling the right function.
+
 

@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
-    <title>R Bootcamp</title>
+    <title>R Workshop</title>
     <meta charset="utf-8" />
     <meta name="author" content="Cory K Costello" />
-    <meta name="date" content="2019-09-23" />
+    <meta name="date" content="2021-03-30" />
     <link href="Intro_slideshow_files/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="Intro_slideshow_files/remark-css-0.0.1/uo.css" rel="stylesheet" />
-    <link href="Intro_slideshow_files/remark-css-0.0.1/uo-fonts.css" rel="stylesheet" />
+    <link href="Intro_slideshow_files/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="Intro_slideshow_files/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
     <link rel="stylesheet" href="my-theme.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# R Bootcamp
+# R Workshop
 ## Introduction to R, R Studio, &amp; The Tidyverse
 ### Cory K Costello
-### 2019-09-23
+### 2021-03-30
 
 ---
 
@@ -129,19 +129,6 @@ class: center, middle, inverse, title-slide
 
 No, seriously!
 
-
----
-## Monday, Sept. 23rd, 1:00pm - 5:00pm
-+ STB 251
-+ Installing R &amp; R Studio, basics of R, and Intro to the tidyverse (time permitting)
-  
-## Monday, Sept. 23rd, 1:00pm - 5:00pm
-+ STB 245
-+ Transforming &amp; Visualizing Data in the tidyverse
-
-## Friday, Sept. 27th, 1:00pm - 5:00pm
-+ STB 245
-+ More tidyverse, basics of R markdown.
 ---
 # Getting Comfortable with R studio
 
@@ -177,7 +164,7 @@ Keyboard shortcut quick reference | `Alt+Shift+K` | `Option+Shift+K`
 ---
 # Let's get started!
 
-Download Materials here: https://github.com/coryc3133/uoregon_r_bootcamp
+Download Materials here:
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -220,9 +207,25 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
-
-<script>
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
 (function() {
   var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
@@ -230,8 +233,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
       links[i].target = '_blank';
     }
   }
-})();
-</script>
+})();</script>
 
 <script>
 slideshow._releaseMath = function(el) {

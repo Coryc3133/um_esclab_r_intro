@@ -1,7 +1,7 @@
-# uoregon_r_bootcamp
-R Bootcamp 
-University of Oregon Psychology Department
-Summer 2019
+# um_esclab_r_intro
+R Workshop
+University of Michigan, Emotion and Self-Control Lab
+Winter/Spring 2020
 
 ## Instructor:
 Cory K. Costello
@@ -10,6 +10,8 @@ Cory K. Costello
 Content adapted from:
 
 [Jessica Kosie's 2018 Version of this workshop](https://github.com/jkosie/uoregon_r_bootcamp)
+
+[Cory Costello's 2019 Version of this workshop](https://github.com/coryc3133/uoregon_r_bootcamp)
 
 [Hadley Wickham's R for Data Science](http://r4ds.had.co.nz/)
 

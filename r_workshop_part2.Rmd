@@ -1,0 +1,327 @@
+---
+title: "R Workshop Part 2"
+author: "Cory K. Costello"
+date: "3/30/2021"
+output: html_document
+---
+
+By the end of this tutorial, you will know:
+
++ Begin understanding tidyverse "grammar"
++ Begin understanding the grammar of data manipulation, `dplyr` 
++ What a pipe is and how to use pipes to chain together `tidyverse` verbs
+
+The best way to do this tutorial is to walk through it slowly, executing each line and trying to understand what it does. You can execute a single line by placing your cursor somewhere in that line and hitting CTRL+enter on a PC or CMD+enter on a mac; you can execute a whole chunk at a time by hitting CTRL+shift+enter on a PC. 
+
+# 3. Introduction to the `tidyverse`
+
+Let's start by installing and loading our first package: the `tidyverse` package. 
+
+["The `tidyverse` is an opionated collection of R packages designed for data science"](https://www.tidyverse.org/). It's a suite of packages designed with a consistent philosophy and aesthetic. This is nice because all of the packages are designed to work well together, providing a consistent framework to do many of the most common tasks in R including:
+
+* data cleaning (`tidyr`)
+* data manipulating (`dplyr`)
+* data visualization (`ggplot2`)
+* working with strings (`stringr`)
+* working with factors (`forcats`)
+
+Among others. We'll be using functions from each of these packages today and next week.
+
+Today we'll just focus on data manipulation with `dplyr` and data visualization with `ggplot2`
+
+Three qualities of the `tidyverse` are worth mentioning at the outset:
+
+1. packages are designed to be like *grammars* for their task, so we'll be using terms like verbs to discuss the tidyverse. The idea is that you can string these grammatical elements together to form more complex statements, just like with language. 
+
+2. The first argument of (basically) every function is data. This is very handy, especially when it comes to piping (discussed below).
+
+3. Variable names are *usually* not quoted.
+
+The last thing I want to be sure to mention is that the tidyverse packages all have [helpful cheatsheets](https://rstudio.com/resources/cheatsheets/). I think these are one of the handiest R resources out there, and I look at them regularly.
+
+Without further ado, let's get started with some basic use of `dplyr`:
+
+## 3.1 `dplyr`
+
+[`dplyr`](https://dplyr.tidyverse.org/) is a grammar of data manipulation. It is made up of several verbs for common data manipulation tasks.
+
+### 3.1.1 Selecting Columns
+
+The `select()` is the first verb we'll cover and is how we can subset columns. If you're like me, you'll soon find it **much** easier to use than the bracket subsetting we did earlier. 
+
+`select()` is the verb for selecting columns from a dataframe. The first argument is data followed which columns you would like to select.
+
+#### 3.1.1.1 Basics of Select
+
+You can indicate the columns you want to select using unquoted names. Let's start by working with the `starwars` data set, which comes with `dplyr`. For example, let's select just `name` from `starwars`
+
+```{r}
+select(starwars, name)
+```
+
+You can select more columns by enetring them, separated by a comma. Let's get age and species:
+
+```{r}
+select(starwars, name, species)
+```
+
+You can also use columns' positions. We could get `name`, the first column, by supplying a 1:
+
+```{r}
+select(starwars, 1)
+```
+
+Or, you can say which variable you don't want by prefacing its name or index with a `-`. For example, let's get rid of gender.
+
+```{r}
+select(starwars, -gender)
+```
+
+You could also get rid of by referencing its index:
+
+```{r}
+select(starwars, -9)
+```
+
+You can also use `:` to select or de-select a range of variables. This can be done with reference to their numerical index:
+
+```{r}
+# select first three:
+select(starwars, 1:3)
+```
+
+```{r}
+# de-select last three:
+select(starwars, -(1:3)) # - requires parenthetical sequence
+```
+
+And you can even use ranges of variable names. 
+```{r}
+# select first three
+select(starwars, name:mass)
+```
+
+```{r}
+# deselect first three
+select(starwars, -(name:mass))
+```
+
+#### 3.1.1.2 Helper functions
+
+The best part of select is that it has special helper function to perform common kinds of selection tasks.
+
+##### starts_with
+For example, let's say we want all the variables that start with 'c'. We can use the `starts_with()` helper function:
+
+```{r}
+select(starwars, starts_with("h"))
+```
+
+#### ends_with
+Select columns that end with some character string:
+```{r}
+select(starwars, ends_with("color"))
+```
+
+#### contains
+Select columns that contain a character.
+```{r}
+select(starwars, contains("i"))
+```
+
+There are others too, but these are the most common. Here is a table of all of them.
+
+function | what it does
+---------|-------------
+`starts_with()` | selects columns starting with a string
+`ends_with()` | selects columns that end with a string
+`contains()` | selects columns that contain a string
+`matches()` | selects columns that match a regular expression
+`num_ranges()` | selects columns that match a numerical range
+`one_of()` | selects columns whose names match entries in a character vector
+`everything()` | selects all columns
+`last_col()` | selects last column; can include an offset.
+
+Each of these can be very useful in a given scenario.
+
+### Exercise 3.1.1a
+> Select all of the variables that contain the letter e in their name.
+
+```{r}
+select(starwars, contains("e"))
+```
+
+
+## 2.1.2 Filtering rows
+
+`filter()` is the next verb we'll cover today, and is used to extract rows based on logical tests.
+
+Like `select()`, its first argument is the data, followed by conditions for filtering data. For example, let's say we want to filter rows for characters that have no biological sex.
+
+```{r}
+filter(starwars, sex == "none")
+```
+
+Or we could select characters that have no biological sex and are less than 100cm in height:
+
+```{r}
+filter(starwars, sex == "none" & height < 100)
+```
+
+We can also filter for observations that meet one condition or another, using `|` for OR. Let's get characters that have no biological sex or are less than 100cm tall:
+
+```{r}
+filter(starwars, sex == "none" | height < 100)
+```
+
+`dplyr` also has a few helper functions for more advanced filtering. One that is pretty useful is `between()`. Let's use it to get characters between 80 and 100cm in height:
+
+```{r}
+filter(starwars, between(height, 80, 100))
+```
+
+### Exercise 3.2a 
+> Get characters between 20 and 40 kg in mass using `filter()` and the `between()` helper function.
+
+```{r}
+filter(starwars, between(mass, 20, 40))
+```
+
+### Exercise 3.2b
+> Get characters between 20 and 40 kg in mass using `filter()` *without* using the `between()` function.
+
+```{r}
+filter(starwars, mass >= 20 & mass <= 40)
+```
+
+## 3.3. Pipes
+
+Pipes come from the `magrittr` library are available when you load the `tidyverse` (_probably unnecessary sidenote: they're technically imported with `dplyr` when you call library(tidyverse)_). Pipes are a way to write strings of functions more easily, creating *pipelines*. They are extremely powerful and useful. A pipe looks like this:
+
+`%>%`
+
+You can enter a pipe with the shortcut CTRL+Shift+M for PC; CMD+Shift+M for Mac.
+
+### 3.3.1 A quick side note about the term pipe
+
+As mentioned above, a pipe in piping syntax is symbolized by `%>%`. However, another character is sometimes called a pipe, which is the vertical bar |, which we saw with logical tests above (| means or in logical statements).
+
+### 3.3.2 The logic of piping syntax
+
+The general idea of piping syntax, is that we have some function on the left hand and right hand side of the pipe. The function on the left side is evaluated, and then the **output** of that function is passed to the function on the right hand side of the pipe as the **first argument** of that (RHS) function. Let's start with a simple example. We'll get the sum of the `mass` variable from the `starwars` data set.
+
+You can think of pipes as standing in for *then*.
+
+```{r}
+starwars$mass %>% # LHS is age vector from starwars
+  sum(na.rm = TRUE) # pass that to the sum function 
+                    # and remove missing/NA data
+```
+
+As you can see, on the left hand side of the pipe `%>%`, we have the mass vector from `starwars`. On the right hand side, we  have the function sum(), so the piped syntax is basically saying *Take mass from starwars then get the sum*.
+
+We can make this look even a little cleaner by using the `select()` function:
+
+```{r}
+starwars %>% # take the data, then...
+  select(mass) %>%  # select mass, then...
+  sum(na.rm = TRUE) # take the sum
+```
+
+Notice that we entered mass as an argument in select and it *looks* like the first argument. Looks can be deceiving; the first argument is actually `.data = starwars`, but that is hidden from view when piping.
+
+**Style Tip:**
+It's typically considered good practice to not have more than one pipe per line.
+
+Bad:
+```{r }
+starwars %>% select(mass) %>% sum(na.rm = TRUE)
+```
+
+Good:
+```{r }
+starwars %>%
+  select(mass) %>% 
+  sum(na.rm = TRUE) 
+```
+
+### 3.3.3 Why use pipes?
+
+The most important and most often mentioned reasons to use pipes are *cleanliness* (which I hear is next to *godliness*) and efficiency:
+
+1. Cleaner code
+    * This is nice, because it helps make your code more readable by other humans (including your future self).
+
+Piped: 
+```{r }
+starwars %>% # take the data, then...
+  select(age) %>%  # select mass, then...
+  sum()
+```
+
+VS Nested:
+```{r}
+sum(select(starwars, mass), na.rm = TRUE)
+```
+
+2. Cleaner environment
+    * When you use pipes, you have basically no reason to save objects from intermediary steps in your data wrangling / analysis workflow, because you can just pass output from function to function without saving it.
+    * Finding object you're looking for is easier.
+    * Auto complete (with tab) a little more efficient.
+
+3. Efficiency
+    * This is efficiency for you, the person doing the coding (not more efficient computing).
+    * Naming objects is hard; piping means coming up with fewer names.
+    
+4. More error-proof
+    * Because naming is hard, you might accidentally re-use a name and make an error.
+
+
+### 2.3.4 A note about Scaling
+
+The gains in cleanliness and efficiency scale with the complexity of what you're doing. 
+
+Let's say, we wanted to take the starwars data, filter for characters between 20 and 40kg in mass, and then select just the name and species variables, and then get unique kids (using the `unique()` function on the subject id).
+
+Without pipes, you'll either end up with some difficult to read code:
+```{r, eval = FALSE}
+unique(select(filter(starwars, mass >= 20 | mass <= 40), name, species))
+```
+or some throwaway objects:
+```{r, eval = FALSE}
+data_subset_mass <- filter(starwars, mass >= 20 | mass <= 40)
+
+data_subset_mass_info <- select(data_subset_mass, name, species)
+
+unique(data_subset_mass_info)
+```
+With pipes, we can avoid these issues:
+```{r}
+starwars %>% # take the data, then...
+  filter(mass >= 20 | mass <= 40) %>% # filter for characters between 20 and 40kg, then...
+  select(name, species) %>% # select name and species, then...
+  unique() # get unique rows
+```
+
+See, so much easier to read, and not flooding our environment with clutter and not taxing our already taxed minds with having to come up with a bunch of names. And keep in mind this is just chaining a few of commands together; it really pays off as you do more and more complicated things.
+
+### 3.3.5 Saving the output of your pipe
+
+Keep in mind that, like everything in R, you have to tell R to save the output of your pipe using the `<-`.
+```{r}
+unique_filtered_data <- starwars %>% # take the data, then...
+  filter(mass >= 20 | mass <= 40) %>% # filter for characters between 20 and 40kg, then...
+  select(name, species) %>% # select name and species, then...
+  unique() # get unique rows
+```
+
+
+### Exercise 3.3a
+> Take the `starwars` data set. Using select and filter, get the number of female characters at least 200cm in height. The output of your pipe should be a single number. *NOTE: you will have to use a function we didn't cover. There are several options. Try googling count number of rows in R. Let me know if you get stuck and i'll help.*
+
+```{r}
+starwars %>% 
+  filter(height >=200 &
+           sex == "female") %>% 
+  nrow()
+```

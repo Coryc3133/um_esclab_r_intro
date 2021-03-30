@@ -1,11 +1,11 @@
 ---
-title: "R Bootcamp"
+title: "R Workshop"
 subtitle: "Introduction to R, R Studio, & The Tidyverse"
 author: "Cory K Costello"
-date: 2019-09-23
+date: 2021-03-30
 output:
   xaringan::moon_reader:
-    css: ["my-theme.css", "default", "uo", "uo-fonts"]
+    css: ["my-theme.css", "default", "metropolis", "metropolis-fonts"]
   lib_dir: libs
   nature:
     highlightStyle: github
@@ -120,19 +120,6 @@ output:
 
 No, seriously!
 
-
----
-## Monday, Sept. 23rd, 1:00pm - 5:00pm
-+ STB 251
-+ Installing R & R Studio, basics of R, and Intro to the tidyverse (time permitting)
-  
-## Monday, Sept. 23rd, 1:00pm - 5:00pm
-+ STB 245
-+ Transforming & Visualizing Data in the tidyverse
-
-## Friday, Sept. 27th, 1:00pm - 5:00pm
-+ STB 245
-+ More tidyverse, basics of R markdown.
 ---
 # Getting Comfortable with R studio
 
@@ -168,4 +155,4 @@ Keyboard shortcut quick reference | `Alt+Shift+K` | `Option+Shift+K`
 ---
 # Let's get started!
 
-Download Materials here: https://github.com/coryc3133/uoregon_r_bootcamp
+Download Materials here: 
